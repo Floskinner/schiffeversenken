@@ -1,4 +1,4 @@
-"""[summary]
+"""Entahelt die Klasse Spielfeld fuer das Spiel Schiffeversenken
 """
 
 from koordinaten import Koordinaten
@@ -6,34 +6,27 @@ from schiff import Schiff
 
 
 class Spielfeld():
-    """[summary]
+    """Klasse womit ein Spielfeld für 1 Person erstellt und verwaltet werden kann
     """
 
-    def __init__(self, *args):
+    def __init__(self, **kwargs):
         """Erstelle Spielfeld
-        args = 0 -> Standartspiellaenge von 10 mal 10 wird erstellt
-        args = 1 -> Spielfeld: int[][] fetiges Spielfeld wird übernommen
-        args = 2 -> X: int, Y: int Spielfeld von X mal Y wird erstellt (!Symetrisch!)
+        kwargs (dict):
+            dimension (int) = 10: Veraendert die groesse vom Spielfeld
+            spielfeld int[][]: Fertiges Spielfeld zuordnen
         """
 
-        x_laenge = 10
-        y_laenge = 10
-        self.__spielfeld: int = [[]]
+        dimension = kwargs.get("dimension")
+        self.__spielfeld: int = kwargs.get("spielfeld")
 
-        anzahl_argumente = len(args)
+        if dimension is None:
+            dimension = 10
 
-        if anzahl_argumente == 1:
-            self.spielfeld = args[0]
+        if self.__spielfeld is None:
+            self.__spielfeld = [0] * dimension
 
-        else:
-            if anzahl_argumente == 2:
-                x_laenge = args[0]
-                y_laenge = args[1]
-
-            self.__spielfeld = [0] * x_laenge
-
-            for x_position in range(x_laenge):
-                self.__spielfeld[x_position] = [0] * y_laenge
+            for x_position in range(dimension):
+                self.__spielfeld[x_position] = [0] * dimension
 
     @property
     def spielfeld(self):
