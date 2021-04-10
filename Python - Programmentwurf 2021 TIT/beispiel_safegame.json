@@ -1,0 +1,95 @@
+// Beispiel für Speichern von einem Spielstand
+// Name wird vom User dann eigegeben
+{
+    "Master": {
+        "Aktueller_Spieler": {
+            "Name": "Floskinner",
+            "Punkte": 200
+        },
+        "Aktueller_Gegner": {
+            "Name": "Floqueboque",
+            "Punkte": 100
+        }
+    },
+    "Floskinner": {
+        "Spielfeld": [
+            [
+                1,
+                2,
+                3,
+                4
+            ],
+            [
+                5,
+                6,
+                7,
+                8
+            ],
+            [
+                9,
+                10,
+                11
+            ]
+        ],
+        "Spielfeld_Gegner": [
+            [
+                1,
+                2,
+                3,
+                4
+            ],
+            [
+                5,
+                6,
+                7,
+                8
+            ],
+            [
+                9,
+                10,
+                11
+            ]
+        ]
+    },
+
+    "Floqueboque": {
+        "Spielfeld": [
+            [
+                1,
+                2,
+                3,
+                4
+            ],
+            [
+                5,
+                6,
+                7,
+                8
+            ],
+            [
+                9,
+                10,
+                11
+            ]
+        ],
+        "Spielfeld_Gegner": [
+            [
+                1,
+                2,
+                3,
+                4
+            ],
+            [
+                5,
+                6,
+                7,
+                8
+            ],
+            [
+                9,
+                10,
+                11
+            ]
+        ]
+    }
+}
