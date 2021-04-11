@@ -29,7 +29,7 @@ class Spielfeld():
                 self.__spielfeld[x_position] = [0] * dimension
 
     @property
-    def spielfeld(self):
+    def spielfeld(self) -> list:
         """Getter fuer Spielfeld
 
         Returns:
@@ -38,7 +38,7 @@ class Spielfeld():
         return self.__spielfeld
 
     @spielfeld.setter
-    def spielfeld(self, spielfeld):
+    def spielfeld(self, spielfeld: list):
         self.__spielfeld = spielfeld
 
     def set_feld(self, staus: int, koordinaten: Koordinaten):
@@ -48,7 +48,7 @@ class Spielfeld():
             staus (int): -1 =daneben, 0 = neutral, 1 = treffer, 2 = Schiff
             koordinaten (Koordinaten): Position
         """
-        self.__spielfeld[koordinaten.x][koordinaten.y] = staus
+        self.__spielfeld[koordinaten.x_position][koordinaten.y_position] = staus
 
     def plaziere_schiff(self, koordinaten: Koordinaten, richtung: int, schiff: Schiff):
         """
@@ -60,15 +60,12 @@ class Spielfeld():
             schiff (Schiff): Das zu plazierende Schiff
         """
         # Ermittle alle Koordinaten wo das Schiff sein wird
-        koordinaten_schiff_alle = self.__get_koordinaten_in_richtung(koordinaten, richtung, schiff.groesse)
-
-        if len(koordinaten_schiff_alle) != schiff.groesse:
-            raise IndexError(f"Das Schiff kann so nicht plaziert werden! Start:{koordinaten.x},{koordinaten.y} Richtung:{richtung}")
+        koordinaten_schiff_alle = self.__get_koordinaten_in_richtung(koordinaten, richtung, schiff.groeße)
 
         # Checke ob das Schiff platziert werden darf
         for koordinaten_schiff in koordinaten_schiff_alle:
             if not self.__valides_plazieren(koordinaten_schiff):
-                raise IndexError(f"Das Schiff kann so nicht plaziert werden! Start:{koordinaten.x},{koordinaten.y} Richtung:{richtung}")
+                raise IndexError(f"Das Schiff kann so nicht plaziert werden! Start:{koordinaten.x_position},{koordinaten.y_position} Richtung:{richtung}")
 
         # Plaziere Schiff
         for koordinaten_schiff in koordinaten_schiff_alle:
@@ -84,7 +81,7 @@ class Spielfeld():
         Returns:
             int: -1 daneben, 0 neutral/Wasser, 1 treffer, 2 Schiff
         """
-        return self.__spielfeld[koordinaten.x][koordinaten.y]
+        return self.__spielfeld[koordinaten.x_position][koordinaten.y_position]
 
     def alle_schiffe_zerstoert(self) -> bool:
         """Zum uberpruefen ob ein Spieler verloren hat, bzw ob noch ein intaktes Schiffteil
@@ -103,9 +100,9 @@ class Spielfeld():
     def reset(self):
         """Setzt alle Felder auf den Wert 0
         """
-        for x_felder in self.__spielfeld:
-            for feld in x_felder:
-                feld = 0
+        for x_position in range(len(self.__spielfeld)):
+            for y_position in range(len(self.__spielfeld[0])):
+                self.__spielfeld[x_position][y_position] = 0
 
     def __valides_plazieren(self, koordinaten: Koordinaten) -> bool:
         """Checkt alle Felder um der entsprechendenKoordinate und schaut, ob dort ein Schiff plaziert ist
@@ -117,6 +114,9 @@ class Spielfeld():
             bool: True - nur Wasser, False - nicht nur Wasser
         """
         alle_koordinaten = self.__get_koordinaten_drumherum(koordinaten)
+
+        if len(alle_koordinaten) < 4:
+            return False
 
         for valide_koordinaten in alle_koordinaten:
             tmp_status = self.get_status_bei(valide_koordinaten)
@@ -135,23 +135,24 @@ class Spielfeld():
             list: Mit allen validen Koordinaten
         """
 
-        gueltige_koordinaten = []
+        alle_koordinaten = []
 
-        try:
-            x_start_position = koordinaten.x-1
-            y_start_position = koordinaten.y-1
+        x_start_position = koordinaten.x_position-1
+        y_start_position = koordinaten.y_position-1
 
+        max_index = len(self.__spielfeld) - 1
+
+        for y_position in range(3):
             for x_position in range(3):
-                for y_position in range(3):
 
-                    tmp_koordinaten = Koordinaten(x_start_position+x_position, y_start_position+y_position)
-                    gueltige_koordinaten.append(tmp_koordinaten)
+                x_index = x_start_position+x_position
+                y_index = y_start_position+y_position
 
-        except IndexError:
-            # Out of Range wird nicht beachtet
-            pass
+                if 0 <= x_index <= max_index and 0 <= y_index <= max_index:
+                    tmp_koordinaten = Koordinaten(x_index+1, y_index+1)
+                    alle_koordinaten.append(tmp_koordinaten)
 
-        return gueltige_koordinaten
+        return alle_koordinaten
 
     def __get_koordinaten_in_richtung(self, koordinaten: Koordinaten, richtung: int, anzahl_felder: int) -> list:
         """Gibt die Koordinaten an, in welcher sich ein Schiff theoretisch befinden wird
@@ -170,40 +171,40 @@ class Spielfeld():
         if richtung == 0:
             for y_position_counter in range(anzahl_felder):
 
-                x_position = koordinaten.x + y_position_counter
-                y_position = koordinaten.y
+                x_position = koordinaten.x_position
+                y_position = koordinaten.y_position - y_position_counter
 
-                tmp_koordinaten = Koordinaten(x_position, y_position)
+                tmp_koordinaten = Koordinaten(x_position+1, y_position+1)
                 koordinaten_schiff.append(tmp_koordinaten)
 
         # Osten
         elif richtung == 1:
-            for y_position_counter in range(anzahl_felder):
+            for x_position_counter in range(anzahl_felder):
 
-                x_position = koordinaten.x
-                y_position = koordinaten.y + y_position_counter
+                x_position = koordinaten.x_position + x_position_counter
+                y_position = koordinaten.y_position
 
-                tmp_koordinaten = Koordinaten(x_position, y_position)
+                tmp_koordinaten = Koordinaten(x_position+1, y_position+1)
                 koordinaten_schiff.append(tmp_koordinaten)
 
         # Sueden
         elif richtung == 2:
             for y_position_counter in range(anzahl_felder):
 
-                x_position = koordinaten.x - y_position_counter
-                y_position = koordinaten.y
+                x_position = koordinaten.x_position
+                y_position = koordinaten.y_position + y_position_counter
 
-                tmp_koordinaten = Koordinaten(x_position, y_position)
+                tmp_koordinaten = Koordinaten(x_position+1, y_position+1)
                 koordinaten_schiff.append(tmp_koordinaten)
 
         # Westen
         elif richtung == 3:
-            for y_position_counter in range(anzahl_felder):
+            for x_position_counter in range(anzahl_felder):
 
-                x_position = koordinaten.x
-                y_position = koordinaten.y - y_position_counter
+                x_position = koordinaten.x_position - x_position_counter
+                y_position = koordinaten.y_position
 
-                tmp_koordinaten = Koordinaten(x_position, y_position)
+                tmp_koordinaten = Koordinaten(x_position+1, y_position+1)
                 koordinaten_schiff.append(tmp_koordinaten)
 
         return koordinaten_schiff
