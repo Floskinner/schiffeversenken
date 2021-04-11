@@ -1,3 +1,28 @@
+"""Modul welches die Klasse Schiff enthalet"""
+
+
 class Schiff():
-    def __init__(self):
-        pass
+    """Hiermit kann ein Schiff mit einer entsprechenden Laenge erstellt werden
+    """
+
+    def __init__(self, name: str, groeße: int):
+        self.__name = name
+        self.__groeße = groeße
+
+    @property
+    def name(self) -> str:
+        """Gibt entsprechenden Namen vom Schiff zurueck
+
+        Returns:
+            str: Name
+        """
+        return self.__name
+
+    @property
+    def groeße(self) -> int:
+        """Gibt entsprechenden Namen vom Schiff zurueck
+
+        Returns:
+            int: Name
+        """
+        return self.__groeße
