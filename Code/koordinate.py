@@ -1,7 +1,7 @@
-"""Modul, welches die Klasse Koordinaten beinhaltet"""
+"""Modul, welches die Klasse Koordinate beinhaltet"""
 
 
-class Koordinaten:
+class Koordinate:
     """Speichert einen X und Y Wert. Beim erstellen des Objektes wird direkt 1 abgezogen, damit
     die gespeicherten X und Y Werte direkt einem Array-Index zugeordnet werden koennen
     """
