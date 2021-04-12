@@ -135,6 +135,12 @@ class Test_Spielfeld(unittest.TestCase):
         self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, richtung_norden, schiff)
         self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, richtung_westen, schiff)
 
+        spielfeld_obj_befuellt = Spielfeld(spielfeld=self.befuelltes_spielfeld)
+        koordinate_befuellt = Koordinate(4, 8) #index[3][7]
+
+        self.assertRaises(IndexError, spielfeld_obj_befuellt.plaziere_schiff, koordinate_befuellt, richtung_norden, schiff)
+
+
     def test_get_status_bei(self):
         spielfeld_obj = Spielfeld(spielfeld=self.befuelltes_spielfeld)
 
