@@ -3,6 +3,7 @@
 
 from koordinate import Koordinate
 from schiff import Schiff
+from helferklasse import Status, Richtung
 
 
 class Spielfeld():
@@ -17,16 +18,16 @@ class Spielfeld():
         """
 
         dimension = kwargs.get("dimension")
-        self.__spielfeld: int = kwargs.get("spielfeld")
+        self.__spielfeld: list = kwargs.get("spielfeld")
 
         if dimension is None:
             dimension = 10
 
         if self.__spielfeld is None:
-            self.__spielfeld = [0] * dimension
+            self.__spielfeld = [Status.WASSER] * dimension
 
             for x_position in range(dimension):
-                self.__spielfeld[x_position] = [0] * dimension
+                self.__spielfeld[x_position] = [Status.WASSER] * dimension
 
     @property
     def spielfeld(self) -> list:
@@ -41,14 +42,14 @@ class Spielfeld():
     def spielfeld(self, spielfeld: list):
         self.__spielfeld = spielfeld
 
-    def set_feld(self, staus: int, koordinate: Koordinate):
+    def set_feld(self, status: int, koordinate: Koordinate):
         """Setzt den Satus eines bestimmten Feldes
 
         Args:
             staus (int): -1 =daneben, 0 = neutral, 1 = treffer, 2 = Schiff
             koordinate (Koordinate): Position
         """
-        self.__spielfeld[koordinate.x_position][koordinate.y_position] = staus
+        self.__spielfeld[koordinate.x_position][koordinate.y_position] = status
 
     def plaziere_schiff(self, koordinate: Koordinate, richtung: int, schiff: Schiff):
         """
@@ -69,7 +70,7 @@ class Spielfeld():
 
         # Plaziere Schiff
         for koordinate_schiff in koordinaten_schiff:
-            self.set_feld(2, koordinate_schiff)
+            self.set_feld(Status.SCHIFF, koordinate_schiff)
 
     def get_status_bei(self, koordinate: Koordinate) -> int:
         """
@@ -92,7 +93,7 @@ class Spielfeld():
         """
         for x_felder in self.__spielfeld:
             for feld in x_felder:
-                if feld != 0:
+                if feld != Status.WASSER:
                     return False
 
         return True
@@ -102,7 +103,7 @@ class Spielfeld():
         """
         for x_position in range(len(self.__spielfeld)):
             for y_position in range(len(self.__spielfeld[0])):
-                self.__spielfeld[x_position][y_position] = 0
+                self.__spielfeld[x_position][y_position] = Status.WASSER
 
     def __valides_plazieren(self, koordinate: Koordinate) -> bool:
         """Checkt alle Felder um der entsprechendenKoordinate und schaut, ob dort ein Schiff plaziert ist
@@ -120,7 +121,7 @@ class Spielfeld():
 
         for valide_koordinate in koordinaten:
             tmp_status = self.get_status_bei(valide_koordinate)
-            if tmp_status != 0:
+            if tmp_status != Status.WASSER:
                 return False
 
         return True
@@ -168,7 +169,7 @@ class Spielfeld():
         koordinaten_schiff = []
 
         # Norden
-        if richtung == 0:
+        if richtung == Richtung.NORDEN:
             for y_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position
@@ -178,7 +179,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Osten
-        elif richtung == 1:
+        elif richtung == Richtung.OSTEN:
             for x_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position + x_position_counter
@@ -188,7 +189,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Sueden
-        elif richtung == 2:
+        elif richtung == Richtung.SUEDEN:
             for y_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position
@@ -198,7 +199,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Westen
-        elif richtung == 3:
+        elif richtung == Richtung.WESTEN:
             for x_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position - x_position_counter

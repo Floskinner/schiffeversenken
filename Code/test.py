@@ -2,6 +2,7 @@ import unittest
 from spielfeld import Spielfeld
 from koordinate import Koordinate
 from schiff import Schiff
+from helferklasse import Status, Richtung
 
 
 class Test_Spielfeld(unittest.TestCase):
@@ -32,30 +33,30 @@ class Test_Spielfeld(unittest.TestCase):
     #  ['9/0', '9/1', '9/2', '9/3', '9/4', '9/5', '9/6', '9/7', '9/8', '9/9']]
 
     def setUp(self):
-        self.leeres_spielfeld = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.leeres_spielfeld = [[Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER]]
 
-        self.befuelltes_spielfeld = [[2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [2, 0, 1, 2, 0, 0, 0, 0, 0, 0],
-                                     [2, 0, 0, 0, 2, 2, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 2, 1, 2, 0, 0, 0, 2, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 2, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 2, 2, 0, 0, 0, 0]]
+        self.befuelltes_spielfeld = [[Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.SCHIFF, Status.WASSER, Status.TREFFER, Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.SCHIFF, Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.SCHIFF, Status.TREFFER, Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.SCHIFF, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.SCHIFF, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.SCHIFF, Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER]]
 
-        self.kurzes_spielfeld = [[0, 0],
-                                 [0, 0]]
+        self.kurzes_spielfeld = [[Status.WASSER, Status.WASSER],
+                                 [Status.WASSER, Status.WASSER]]
 
     def test_konstruktoren(self):
         leeres_spielfeld_obj = Spielfeld()
@@ -79,7 +80,7 @@ class Test_Spielfeld(unittest.TestCase):
 
     def test_set_feld(self):
         spielfeld_obj = Spielfeld()
-        status = 1
+        status = Status.TREFFER
         position = Koordinate(1, 2)
         spielfeld_obj.set_feld(status, position)
 
@@ -91,54 +92,46 @@ class Test_Spielfeld(unittest.TestCase):
         schiff = Schiff("U-Boot", 2)
         koordinate = Koordinate(1, 1)  # index [0][0]
 
-        # 0 Norden
-        # 1 Osten
-        # 2 Sueden
-        # 3 Westen
-        richtung_norden = 0
-        richtung_osten = 1
-        richtung_sueden = 2
-        richtung_westen = 3
 
-        spielfeld_mit_plaziertem_schiff_sueden = [[2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        spielfeld_mit_plaziertem_schiff_sueden = [[Status.SCHIFF, Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                  [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER]]
 
-        spielfeld_mit_plaziertem_schiff_osten = [[2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        spielfeld_mit_plaziertem_schiff_osten = [[Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                                 [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER]]
 
-        spielfeld_obj.plaziere_schiff(koordinate, richtung_sueden, schiff)
+        spielfeld_obj.plaziere_schiff(koordinate, Richtung.SUEDEN, schiff)
         self.assertEqual(spielfeld_obj.spielfeld, spielfeld_mit_plaziertem_schiff_sueden)
 
         spielfeld_obj.reset()
 
-        spielfeld_obj.plaziere_schiff(koordinate, richtung_osten, schiff)
+        spielfeld_obj.plaziere_schiff(koordinate, Richtung.OSTEN, schiff)
         self.assertEqual(spielfeld_obj.spielfeld, spielfeld_mit_plaziertem_schiff_osten)
 
         spielfeld_obj.reset()
 
-        self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, richtung_norden, schiff)
-        self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, richtung_westen, schiff)
+        self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, Richtung.NORDEN, schiff)
+        self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, Richtung.WESTEN, schiff)
 
         spielfeld_obj_befuellt = Spielfeld(spielfeld=self.befuelltes_spielfeld)
         koordinate_befuellt = Koordinate(4, 8) #index[3][7]
 
-        self.assertRaises(IndexError, spielfeld_obj_befuellt.plaziere_schiff, koordinate_befuellt, richtung_norden, schiff)
+        self.assertRaises(IndexError, spielfeld_obj_befuellt.plaziere_schiff, koordinate_befuellt, Richtung.NORDEN, schiff)
 
 
     def test_get_status_bei(self):
