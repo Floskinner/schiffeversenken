@@ -1,22 +1,66 @@
 """[DocString]
 """
+from spielfeld import Spielfeld
 import sys
 import os
 import platform
 import time
 
-
 class Master:
     """[summary]
     """
 
+    def print_zeile(self, daten):
+        j=0
+        for feld in daten:
+            if feld == 0:
+                print(f"\u2503 \u224B  ", end='')
+            if j==9:
+                print("\u2503")
+            j=j+1
+
+    def print_trennlinie(self):
+        i=0
+        print("\u2503", end='')
+        while i<49:            
+            print("\u2501", end='')
+            i=i+1;
+        print("\u2503")
+    
+    def print_rahmen_oben(self):       
+        #Erste Zeile des Spielfelds
+        i=0
+        print("\u250F", end='')
+        while i<49:            
+            print("\u2501", end='')
+            i=i+1;
+        print("\u2513")
+    
+    def print_rahmen_unten(self):       
+        #Erste Zeile des Spielfelds
+        i=0
+        print("\u2517", end='')
+        while i<49:            
+            print("\u2501", end='')
+            i=i+1;
+        print("\u251B") 
 
     def print_spielfeld(self):
         """
         Gibt Spielfeld aus.
         """
-        spielfeld = [[1,1,1,1,1,0,0,0,0,0],[2,2,0,0,0,0,0,0,0,0]]
-        print("\u1F7E5")
+        print("\u224B\t\u2693\t\u2388\t\u2668")
+        print()
+        spielfeld:Spielfeld = Spielfeld()
+        self.print_rahmen_oben()
+        cnt_zeile = 0
+        for zeile in spielfeld.spielfeld:       
+            self.print_zeile(zeile)
+            if cnt_zeile < 9:
+                self.print_trennlinie()
+            else:
+                self.print_rahmen_unten()
+            cnt_zeile = cnt_zeile+1
 
     def neues_spiel(self):
         """
@@ -75,7 +119,7 @@ def main(_argv):
     """
     master: Master = Master()
     master.print_willkommensnachricht()
-    time.sleep(3)
+    time.sleep(1)
     master.clear_terminal()
     master.print_spielfeld()
 
