@@ -1,6 +1,9 @@
 """[DocString]
 """
+from koordinate import Koordinate
+from spieler import Spieler
 from spielfeld import Spielfeld
+from helferklasse import Rahmenzeichen, Status
 import sys
 import os
 import platform
@@ -10,41 +13,87 @@ import time
 class Master:
     """[summary]
     """
+
+    erlaubte_buchstaben:list = ["A","B","C","D","E","F","G","H","I","J"]
+
     @property
-    def spieler_1(self)->Spieler:
+    def spieler_1(self) -> Spieler:
         """
         Getter für Spieler_1
         """
         return self.__spieler_1
 
+    @spieler_1.setter
+    def spieler_1(self, spieler_1: Spieler):
+        self.__spieler_1 = spieler_1
+
+    @property
+    def spieler_2(self) -> Spieler:
+        """
+        Getter für Spieler_2
+        Returns:
+            Spieler 
+        """
+        return self.__spieler_2
+
+    @spieler_2.setter
+    def spieler_2(self, spieler_2: Spieler):
+        self.__spieler_2 = spieler_2
+
+    @property
+    def aktueller_spieler(self) -> Spieler:
+        """
+        Getter für aktuellen Spieler
+        Returns:
+            Spieler: Spieler, der gerade dran ist.
+        """
+        return self.__aktueller_spieler
+    
+    @aktueller_spieler.setter
+    def aktueller_spieler(self, aktueller_spieler:Spieler):
+        self.__aktueller_spieler = aktueller_spieler
+
+    @property
+    def aktueller_gegner(self) -> Spieler:
+        return self.__aktueller_gegner
+    
+    @aktueller_gegner.setter
+    def aktueller_gegner(self, aktueller_gegner:Spieler):
+        """Setter für aktuellen Gegner
+
+        Args:
+            aktueller_gegner (Spieler): Spieler, der gerade nicht dran ist.
+        """
+        self.__aktueller_gegner = aktueller_gegner
+
     def __print_zeile(self, daten):
         j = 0
         cnt_spalten = len(daten)
         for feld in daten:
-            if feld == 0:
-                print(f"\u2503   ", end='')
-            elif feld == 2:
-                print(f"\u2503 # ", end='')
-            elif feld == 1:
-                print(f"\u2503 X ", end='')
-            elif feld == -1:
-                print(f"\u2503 O ", end='')
+            if feld == Status.WASSER:
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}   ", end='')
+            elif feld == Status.SCHIFF:
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} # ", end='')
+            elif feld == Status.TREFFER:
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} X ", end='')
+            elif feld == Status.DANEBEN:
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} O ", end='')
             else:
-                print(f"\u2503 {feld} ", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {feld} ", end='')
 
             if cnt_spalten == 11 and j == 10:
-                print("\u2503")
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}")
             if j == 9 and not cnt_spalten == 11:
-                print("\u2503")
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}")
             j = j+1
 
     def __print_trennlinie(self):
         i = 0
-        print("\u2503", end='')
+        print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}", end='')
         while i < 43:
             print("\u2501", end='')
             i = i+1
-        print("\u2503")
+        print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}")
 
     def __print_rahmen_oben(self):
         # Erste Zeile des Spielfelds
@@ -87,9 +136,9 @@ class Master:
 
         for zeile in gedrehtes_spielfeld:
             if cnt_zeile == 10:
-                print(f"\u2503 {cnt_zeile}", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile}", end='')
             else:
-                print(f"\u2503 {cnt_zeile} ", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile} ", end='')
             self.__print_zeile(zeile)
             if cnt_zeile < 10:
                 self.__print_trennlinie()
@@ -102,16 +151,47 @@ class Master:
         Erstellt leeres Spielfeld,
         fragt Spielernamen ab            
         """
-    def print_countdown(self, zeit:int=3):
+
+    def print_countdown(self, zeit: int = 3):
         pass
 
     def print_spielende(self):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
-    def schiessen(spieler:Spieler, gegner:Spieler):
+    def schiessen(self, spieler: Spieler, gegner: Spieler):
         pass
 
-    def platziere_schiffe
+    def get_user_input_koordinate(self)->Koordinate:
+        ist_buchstabe_erlaubt = False
+        while not ist_buchstabe_erlaubt:
+            buchstabe = input("Geben Sie den Buchstabenwert der Koordinate ein: ")
+            if buchstabe in self.erlaubte_buchstaben:
+                ist_buchstabe_erlaubt = True
+            else:                
+                print("Keine gültige Eingabe.")
+        
+        ist_zahl_erlaubt = False
+        while not ist_zahl_erlaubt:
+            zahl = input("Geben Sie den Zahlenwert der Koordinate ein: ")
+            if self.__ist_int(zahl):
+                if int(zahl) < 10 and int(zahl) > 0:
+                    zahl = int(zahl)
+                    ist_zahl_erlaubt = True
+                else:
+                    print("Die Zahl muss größer als 0 und kleiner als 11 sein.") 
+            else:
+                print("Die Eingabe war keine ganze Zahl.")
+        return Koordinate(buchstabe, zahl)          
+                
+    def __ist_int(self, zahl) -> bool:
+        try:
+            int(zahl)
+            return True
+        except ValueError:
+            return False
+
+    def platziere_schiffe(self)->Spielfeld:
+        pass
 
     def print_willkommensnachricht(self):
         """
@@ -165,13 +245,17 @@ def main(_argv):
     """
     master: Master = Master()
     master.print_willkommensnachricht()
-    time.sleep(1)
+    time.sleep(3)
     master.clear_terminal()
     auswahl: int = master.print_menu()
     master.clear_terminal()
-    spielfeld = Spielfeld()
-    master.print_spielfeld(spielfeld)
-    master.print_spielfeld(spielfeld)
+    spielfeld_spieler_1 = Spielfeld()
+    spielfeld_spieler_2 = Spielfeld()
+    
+    master.print_spielfeld(spielfeld_spieler_1)
+    koordinate = master.get_user_input_koordinate()
+    spielfeld_spieler_1.set_feld(Status.SCHIFF, koordinate=koordinate)
+    master.print_spielfeld(spielfeld_spieler_1)
 
 
 if __name__ == '__main__':
