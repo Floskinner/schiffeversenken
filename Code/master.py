@@ -151,6 +151,9 @@ class Master:
         Erstellt leeres Spielfeld,
         fragt Spielernamen ab            
         """
+        name_spieler_1 = input("Name von Spieler 1: ")
+        self.__spieler_1 = Spieler()
+        name_spieler_2 = input("Name von Spieler 2: ")
 
     def print_countdown(self, zeit: int = 3):
         pass
@@ -225,7 +228,7 @@ class Master:
                        2 - Spiel laden
         """
         print("Menu:")
-        input("1 - Neues Spiel\n2 - Spiel laden\t")
+        input("1 - Neues Spiel\n2 - Spiel laden\n")
 
     def clear_terminal(self):
         """
@@ -248,6 +251,10 @@ def main(_argv):
     time.sleep(3)
     master.clear_terminal()
     auswahl: int = master.print_menu()
+    if auswahl == 1:
+        neues_spiel()
+    elif auswahl == 2:
+
     master.clear_terminal()
     spielfeld_spieler_1 = Spielfeld()
     spielfeld_spieler_2 = Spielfeld()
