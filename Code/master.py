@@ -152,7 +152,7 @@ class Master:
         fragt Spielernamen ab            
         """
         name_spieler_1 = input("Name von Spieler 1: ")
-        self.__spieler_1 = Spieler()
+        self.__spieler_1 = Spieler(name_spieler_1, Spielfeld(), Spielfeld(), 0)
         name_spieler_2 = input("Name von Spieler 2: ")
 
     def print_countdown(self, zeit: int = 3):
@@ -228,7 +228,9 @@ class Master:
                        2 - Spiel laden
         """
         print("Menu:")
-        input("1 - Neues Spiel\n2 - Spiel laden\n")
+        auswahl = input("1 - Neues Spiel\n2 - Spiel laden\n")
+        if self.__ist_int(auswahl):
+            return int(auswahl)
 
     def clear_terminal(self):
         """
@@ -252,12 +254,12 @@ def main(_argv):
     master.clear_terminal()
     auswahl: int = master.print_menu()
     if auswahl == 1:
-        neues_spiel()
+        master.neues_spiel()
     elif auswahl == 2:
-
+        pass
     master.clear_terminal()
-    spielfeld_spieler_1 = Spielfeld()
-    spielfeld_spieler_2 = Spielfeld()
+    master.aktueller_spieler = master.spieler_1
+    master.aktueller_spieler
     
     master.print_spielfeld(spielfeld_spieler_1)
     koordinate = master.get_user_input_koordinate()
