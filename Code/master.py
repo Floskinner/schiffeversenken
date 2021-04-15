@@ -181,15 +181,16 @@ class Master:
     def print_spielende(self):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
+    #TODO: Schiessen braucht Koordinate als Parameter
     def schiessen(self, spieler: Spieler, gegner: Spieler):
         print(f"{spieler.name}, wo willst du hinschiessen?")
         koordinate:Koordinate = self.get_user_input_koordinate()
-        schuss_ergebnis:int = spieler.wird_abgeschossen(koordinate)
-        if schuss_ergebnis == 1:
+        schuss_ergebnis:Status = spieler.wird_abgeschossen(koordinate)
+        if schuss_ergebnis == Status.TREFFER:
             print("Treffer!")
             spieler.update_spielfeld_gegner(koordinate, Status.TREFFER)
             gegner.update_spielfeld(koordinate, Status.TREFFER)
-        elif schuss_ergebnis == -1:
+        else:
             print("Daneben!")
             spieler.update_spielfeld_gegner(koordinate, Status.DANEBEN)
 
