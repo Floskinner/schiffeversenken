@@ -58,6 +58,15 @@ class Spieler:
             return -1
 
     @property
+    def name(self) -> str:
+        """Gibt Namen des Spielers zurück
+
+        Returns:
+            str: Name des Spielers
+        """
+        return self.__name
+
+    @property
     def spielfeld(self) -> Spielfeld:
         """Gibt das Spielfeld zurück
 

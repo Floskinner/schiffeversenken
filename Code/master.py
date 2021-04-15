@@ -1,5 +1,6 @@
 """[DocString]
 """
+from schiff import Schiff
 from koordinate import Koordinate
 from spieler import Spieler
 from spielfeld import Spielfeld
@@ -152,8 +153,17 @@ class Master:
         fragt Spielernamen ab            
         """
         name_spieler_1 = input("Name von Spieler 1: ")
-        self.__spieler_1 = Spieler(name_spieler_1, Spielfeld(), Spielfeld(), 0)
+        self.__spieler_1 = Spieler(name_spieler_1, Spielfeld(), Spielfeld(), 0)        
         name_spieler_2 = input("Name von Spieler 2: ")
+        self.__spieler_2 = Spieler(name_spieler_2,Spielfeld(),Spielfeld(),0)
+
+    def toggle_spielzug(self):
+        if self.aktueller_spieler == self.__spieler_1:
+            self.aktueller_spieler == self.__spieler_2
+            self.aktueller_gegner == self.__spieler_1
+        elif self.aktueller_spieler == self.__spieler_2:
+            self.aktueller_spieler == self.__spieler_1
+            self.aktueller_gegner == self.__spieler_2
 
     def print_countdown(self, zeit: int = 3):
         pass
@@ -177,7 +187,7 @@ class Master:
         while not ist_zahl_erlaubt:
             zahl = input("Geben Sie den Zahlenwert der Koordinate ein: ")
             if self.__ist_int(zahl):
-                if int(zahl) < 10 and int(zahl) > 0:
+                if int(zahl) <= 10 and int(zahl) > 0:
                     zahl = int(zahl)
                     ist_zahl_erlaubt = True
                 else:
@@ -194,7 +204,28 @@ class Master:
             return False
 
     def platziere_schiffe(self)->Spielfeld:
-        pass
+        schiffe:list = [Schiff("Schlachtschiff",5),
+        Schiff("Kreuzer",4), Schiff("Kreuzer",4), 
+        Schiff("Zerstoerer",3), Schiff("Zerstoerer",3),Schiff("Zerstoerer",3),
+        Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2)]
+
+        for schiff in schiffe:
+            self.print_spielfeld(self.aktueller_spieler.spielfeld)
+            print(f"{self.aktueller_spieler.name}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
+            ist_platziert = False
+            while(not ist_platziert):
+                koordinate:Koordinate = self.get_user_input_koordinate()
+                richtung = input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n")
+                if self.__ist_int(richtung) and int(richtung) >= 0 and int(richtung) <= 3:                                  
+                    try:
+                        self.aktueller_spieler.spielfeld.plaziere_schiff(koordinate, int(richtung), schiff)
+                        self.clear_terminal()
+                        ist_platziert = True
+                    except IndexError:
+                        print("Das Schiff kann so nicht platziert werden.")
+                        ist_platziert = False
+                else:
+                    print("Ungueltige Eingabe.")
 
     def print_willkommensnachricht(self):
         """
@@ -232,6 +263,13 @@ class Master:
         if self.__ist_int(auswahl):
             return int(auswahl)
 
+    def print_alles_fuer_spielzug(self):
+        print(f"{self.aktueller_spieler.name} du bist dran.\n")
+        self.print_spielfeld(self.aktueller_spieler.spielfeld_gegner)
+        print("\nEigenes Spielfeld")
+        self.print_spielfeld(self.aktueller_spieler.spielfeld)
+
+
     def clear_terminal(self):
         """
         Löscht Inhalt der Shell
@@ -259,12 +297,15 @@ def main(_argv):
         pass
     master.clear_terminal()
     master.aktueller_spieler = master.spieler_1
-    master.aktueller_spieler
-    
-    master.print_spielfeld(spielfeld_spieler_1)
-    koordinate = master.get_user_input_koordinate()
-    spielfeld_spieler_1.set_feld(Status.SCHIFF, koordinate=koordinate)
-    master.print_spielfeld(spielfeld_spieler_1)
+    master.aktueller_gegner = master.spieler_2
+    master.platziere_schiffe()
+    master.toggle_spielzug()
+    master.platziere_schiffe()
+
+    master.print_alles_fuer_spielzug()
+    # koordinate = master.get_user_input_koordinate()
+    # master.aktueller_spieler.spielfeld.set_feld(Status.SCHIFF, koordinate=koordinate)
+    # master.print_spielfeld(master.aktueller_spieler.spielfeld)
 
 
 if __name__ == '__main__':

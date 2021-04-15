@@ -169,7 +169,7 @@ class Spielfeld():
         koordinaten_schiff = []
 
         # Norden
-        if richtung == Richtung.NORDEN:
+        if richtung == Richtung.NORDEN.value:
             for y_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position
@@ -179,7 +179,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Osten
-        elif richtung == Richtung.OSTEN:
+        elif richtung == Richtung.OSTEN.value:
             for x_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position + x_position_counter
@@ -189,7 +189,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Sueden
-        elif richtung == Richtung.SUEDEN:
+        elif richtung == Richtung.SUEDEN.value:
             for y_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position
@@ -199,7 +199,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Westen
-        elif richtung == Richtung.WESTEN:
+        elif richtung == Richtung.WESTEN.value:
             for x_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position - x_position_counter

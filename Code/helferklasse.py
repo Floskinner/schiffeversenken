@@ -16,4 +16,4 @@ class Rahmenzeichen(Enum):
     HEAVY_VERTICAL = "\u2503"
 
 
-erlaubte_buchstaben = ["A","B","C","D","E","F","G","H","I","J"]
+
