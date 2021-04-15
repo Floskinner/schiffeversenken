@@ -26,7 +26,8 @@ class Test_Master(unittest.TestCase):
 
         self.spieler_1 = Spieler("Test1", self.befuelltes_spielfeld, Spielfeld(),0)
         self.spieler_2 = Spieler("Test2", self.befuelltes_spielfeld, Spielfeld(), 0)
-        self.test_koordinate = Koordinate('A',1)
+        self.test_koordinate_treffer = Koordinate('A',1)
+        self.test_koordinate_daneben = Koordinate('E',1)
         return super().setUp()
 
     def test_print_spielfeld(self):       
@@ -35,7 +36,7 @@ class Test_Master(unittest.TestCase):
         self.master.print_spielfeld(test_spielfeld)
 
     def test_schiessen(self):
-        pass
+        self.master.schiessen(self.spieler_1, self.spieler_2)
 
 
 if __name__ == '__main__':
