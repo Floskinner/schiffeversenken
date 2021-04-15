@@ -64,3 +64,23 @@ class Spieler:
             return 1
         else:
             return -1
+
+    def get_spielfeld(self) -> Spielfeld:
+        """Gibt das Spielfeld zurück
+
+        Returns:
+            spielfeld 
+        """
+        return self.__spielfeld
+
+
+    def set_spielfeld(self, spielfeld: Spielfeld):
+        """Setzten des Spielfelds
+
+        Args: 
+            spielfeld (Spieldfeld): Spielfeld des Spielers
+
+        Returns:
+            spielfeld
+        """
+        self.__spielfeld = spielfeld
