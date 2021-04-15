@@ -75,7 +75,7 @@ class Spielfeld():
         for koordinate_schiff in koordinaten_schiff:
             self.set_feld(Status.SCHIFF, koordinate_schiff)
 
-    def get_status_bei(self, koordinate: Koordinate) -> Satus:
+    def get_status_bei(self, koordinate: Koordinate) -> Status:
         """
         Gibt den Status des Feldes an der entsprechenden Position zurueck
 
