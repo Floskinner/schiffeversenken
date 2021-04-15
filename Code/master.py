@@ -4,7 +4,7 @@ from schiff import Schiff
 from koordinate import Koordinate
 from spieler import Spieler
 from spielfeld import Spielfeld
-from helferklasse import Rahmenzeichen, Status
+from helferklasse import Rahmenzeichen, Richtung, Status
 import sys
 import os
 import platform
@@ -152,18 +152,25 @@ class Master:
         Erstellt leeres Spielfeld,
         fragt Spielernamen ab            
         """
+        self.clear_terminal()
         name_spieler_1 = input("Name von Spieler 1: ")
-        self.__spieler_1 = Spieler(name_spieler_1, Spielfeld(), Spielfeld(), 0)        
+        spielfeld_spieler_1 = self.platziere_schiffe(name_spieler_1) 
+        self.__spieler_1 = Spieler(name_spieler_1, spielfeld_spieler_1, Spielfeld(), 0)
+        self.clear_terminal()
         name_spieler_2 = input("Name von Spieler 2: ")
-        self.__spieler_2 = Spieler(name_spieler_2,Spielfeld(),Spielfeld(),0)
+        spielfeld_spieler_2 = self.platziere_schiffe(name_spieler_2) 
+        self.__spieler_2 = Spieler(name_spieler_2,spielfeld_spieler_2,Spielfeld(),0)
 
     def toggle_spielzug(self):
-        if self.aktueller_spieler == self.__spieler_1:
-            self.aktueller_spieler == self.__spieler_2
-            self.aktueller_gegner == self.__spieler_1
-        elif self.aktueller_spieler == self.__spieler_2:
-            self.aktueller_spieler == self.__spieler_1
-            self.aktueller_gegner == self.__spieler_2
+        temp:Spieler = self.aktueller_spieler
+        self.aktueller_spieler = self.aktueller_gegner
+        self.aktueller_gegner = temp
+        # if self.aktueller_spieler == self.__spieler_1:
+        #     self.aktueller_spieler == self.__spieler_2
+        #     self.aktueller_gegner == self.__spieler_1
+        # elif self.aktueller_spieler == self.__spieler_2:
+        #     self.aktueller_spieler == self.__spieler_1
+        #     self.aktueller_gegner == self.__spieler_2
 
     def print_countdown(self, zeit: int = 3):
         while zeit:
@@ -215,29 +222,31 @@ class Master:
         except ValueError:
             return False
 
-    def platziere_schiffe(self)->Spielfeld:
+    def platziere_schiffe(self, name:str)->Spielfeld:
         schiffe:list = [Schiff("Schlachtschiff",5),
         Schiff("Kreuzer",4), Schiff("Kreuzer",4), 
         Schiff("Zerstoerer",3), Schiff("Zerstoerer",3),Schiff("Zerstoerer",3),
         Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2)]
 
+        spielfeld = Spielfeld()
+
         for schiff in schiffe:
-            self.print_spielfeld(self.aktueller_spieler.spielfeld)
-            print(f"{self.aktueller_spieler.name}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
+            self.print_spielfeld(spielfeld)
+            print(f"{name}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
             ist_platziert = False
             while(not ist_platziert):
-                koordinate:Koordinate = self.get_user_input_koordinate()
-                richtung = input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n")
-                if self.__ist_int(richtung) and int(richtung) >= 0 and int(richtung) <= 3:                                  
-                    try:
-                        self.aktueller_spieler.spielfeld.plaziere_schiff(koordinate, int(richtung), schiff)
-                        self.clear_terminal()
-                        ist_platziert = True
-                    except IndexError:
-                        print("Das Schiff kann so nicht platziert werden.")
-                        ist_platziert = False
-                else:
+                try:
+                    koordinate:Koordinate = self.get_user_input_koordinate()
+                    richtung = Richtung(int(input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n")))
+                    spielfeld.plaziere_schiff(koordinate, richtung, schiff)
+                    self.clear_terminal()
+                    ist_platziert = True
+                except IndexError:
+                    print("Das Schiff kann so nicht platziert werden.")
+                    ist_platziert = False
+                except ValueError:
                     print("Ungueltige Eingabe.")
+        return spielfeld
 
     def print_willkommensnachricht(self):
         """
@@ -294,35 +303,34 @@ class Master:
             os.system('clear')
 
 
-def main(_argv):
-    """
-    Hauptfunktion
-    Args:
-        _argv ([type]): [description]
-    """
-    master: Master = Master()
-    master.print_willkommensnachricht()
-    time.sleep(3)
-    master.clear_terminal()
+    def spielen(self):
+        """
+        Hauptfunktion
+        Args:
+            _argv ([type]): [description]
+        """        
+        self.print_willkommensnachricht()
+        time.sleep(3)
+        self.clear_terminal()
 
-    auswahl: int = master.print_menu()
-    if auswahl == 1:
-        master.neues_spiel()
-        master.aktueller_spieler = master.spieler_1
-        master.aktueller_gegner = master.spieler_2
-        master.platziere_schiffe()
-        master.toggle_spielzug()
-        master.platziere_schiffe()
-        master.toggle_spielzug()
-    elif auswahl == 2:
-        pass
-    master.clear_terminal()
-        
-    spiel_vorbei:bool = False
-    while not spiel_vorbei:
-        master.print_alles_fuer_spielzug()
-        master.print_countdown(3)
-        master.toggle_spielzug()
+        auswahl: int = self.print_menu()
+        if auswahl == 1:
+            self.neues_spiel()
+            self.aktueller_spieler = self.spieler_1
+            self.aktueller_gegner = self.spieler_2
+        elif auswahl == 2:
+            pass
+        self.clear_terminal()
+            
+        spiel_vorbei:bool = False
+        while not spiel_vorbei:
+            self.print_alles_fuer_spielzug()
+            self.print_countdown(3)
+            self.toggle_spielzug()
+
+def main(_argv):
+    master: Master = Master()
+    master.spielen()
 
 
 if __name__ == '__main__':
