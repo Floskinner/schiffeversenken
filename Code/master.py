@@ -166,13 +166,25 @@ class Master:
             self.aktueller_gegner == self.__spieler_2
 
     def print_countdown(self, zeit: int = 3):
-        pass
+        while zeit:
+            print(f"Anzeige wird in {zeit} Sekunden geloescht.")
+            time.sleep(1)
+            zeit -= 1
 
     def print_spielende(self):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
     def schiessen(self, spieler: Spieler, gegner: Spieler):
-        pass
+        print(f"{spieler.name}, wo willst du hinschiessen?")
+        koordinate:Koordinate = self.get_user_input_koordinate()
+        schuss_ergebnis:int = spieler.wird_abgeschossen(koordinate)
+        if schuss_ergebnis == 1:
+            print("Treffer!")
+            spieler.update_spielfeld_gegner(koordinate, Status.TREFFER)
+            gegner.update_spielfeld(koordinate, Status.TREFFER)
+        elif schuss_ergebnis == -1:
+            print("Daneben!")
+            spieler.update_spielfeld_gegner(koordinate, Status.DANEBEN)
 
     def get_user_input_koordinate(self)->Koordinate:
         ist_buchstabe_erlaubt = False
@@ -265,9 +277,11 @@ class Master:
 
     def print_alles_fuer_spielzug(self):
         print(f"{self.aktueller_spieler.name} du bist dran.\n")
+        print("Hier hast du schon ueberall hingeschossen: ")
         self.print_spielfeld(self.aktueller_spieler.spielfeld_gegner)
         print("\nEigenes Spielfeld")
         self.print_spielfeld(self.aktueller_spieler.spielfeld)
+        self.schiessen(self.aktueller_spieler, self.aktueller_gegner)
 
 
     def clear_terminal(self):
@@ -290,22 +304,25 @@ def main(_argv):
     master.print_willkommensnachricht()
     time.sleep(3)
     master.clear_terminal()
+
     auswahl: int = master.print_menu()
     if auswahl == 1:
         master.neues_spiel()
+        master.aktueller_spieler = master.spieler_1
+        master.aktueller_gegner = master.spieler_2
+        master.platziere_schiffe()
+        master.toggle_spielzug()
+        master.platziere_schiffe()
+        master.toggle_spielzug()
     elif auswahl == 2:
         pass
     master.clear_terminal()
-    master.aktueller_spieler = master.spieler_1
-    master.aktueller_gegner = master.spieler_2
-    master.platziere_schiffe()
-    master.toggle_spielzug()
-    master.platziere_schiffe()
-
-    master.print_alles_fuer_spielzug()
-    # koordinate = master.get_user_input_koordinate()
-    # master.aktueller_spieler.spielfeld.set_feld(Status.SCHIFF, koordinate=koordinate)
-    # master.print_spielfeld(master.aktueller_spieler.spielfeld)
+        
+    spiel_vorbei:bool = False
+    while not spiel_vorbei:
+        master.print_alles_fuer_spielzug()
+        master.print_countdown(3)
+        master.toggle_spielzug()
 
 
 if __name__ == '__main__':
