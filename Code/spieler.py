@@ -1,9 +1,12 @@
 from koordinate import Koordinate
 from spielfeld import Spielfeld
+from helferklasse import Status
+
 
 class Spieler:
     """Klasse womit ein Spieler verwaltet werden kann
     """
+
     def __init__(self, name: str, spielfeld: Spielfeld, spielfeld_gegner: Spielfeld, punkte: int = 0):
         """Erstelle Spieler
 
@@ -18,21 +21,21 @@ class Spieler:
         self.__spielfeld_gegner = spielfeld_gegner
         self.__punkte = punkte
 
-    def update_spielfeld_gegner(self, koordinate: Koordinate, status: int):
+    def update_spielfeld_gegner(self, koordinate: Koordinate, status: Status):
         """Aktualisieren des Gegner Spielfelds
 
         Args: 
             koordinate (Koordinate): Koordinate des Feldes 
-            status (int): Status des Feldes
+            status (Status): Status des Feldes
         """
         self.__spielfeld_gegner.set_feld(status, koordinate)
-        
-    def update_spielfeld(self, koordinate: Koordinate, status: int = 1):
+
+    def update_spielfeld(self, koordinate: Koordinate, status: Status):
         """Aktualisieren des eigenen Spielfelds
 
         Args: 
             koordinate (Koordinate): Koordinate des Feldes 
-            status (int): Status des Feldes
+            status (Status): Status des Feldes
         """
         self.__spielfeld.set_feld(status, koordinate)
 
@@ -40,22 +43,23 @@ class Spieler:
         """Hinzufügen eines Punktes
         """
         self.__punkte += punkte
-        
-    def wird_abgeschossen(self, koordinate: Koordinate) -> int: 
+
+    def wird_abgeschossen(self, koordinate: Koordinate) -> Status:
         """Prüfen und ändern der Felder des eigenen Spielfelds ob oder ob nicht getroffen wurde
 
         Args: 
             koordinate (Koordinate): Koordinate des Feldes 
 
         Returns:
-            int: -1 daneben, 1 treffer
+            Status: daneben, Wasser, treffer, Schiff
         """
+
         status_feld = self.__spielfeld.get_status_bei(koordinate)
-        if status_feld == 1 or status_feld == 2:
-            self.__spielfeld.set_feld(1, koordinate)
-            return 1
-        else:
-            return -1
+
+        if status_feld == Status.SCHIFF:
+            self.__spielfeld.set_feld(Status.TREFFER, koordinate)
+
+        return self.__spielfeld.get_status_bei(koordinate)
 
     @property
     def name(self) -> str:
@@ -73,7 +77,7 @@ class Spieler:
         Returns:
             spielfeld 
         """
-        return self.__spielfeld    
+        return self.__spielfeld
 
     @property
     def spielfeld_gegner(self) -> Spielfeld:

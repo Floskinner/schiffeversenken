@@ -45,11 +45,11 @@ class Spielfeld():
     def spielfeld(self, spielfeld: list):
         self.__spielfeld = spielfeld
 
-    def set_feld(self, status: int, koordinate: Koordinate):
+    def set_feld(self, status: Status, koordinate: Koordinate):
         """Setzt den Satus eines bestimmten Feldes
 
         Args:
-            staus (int): -1 =daneben, 0 = neutral, 1 = treffer, 2 = Schiff
+            staus (Status): daneben, neutral, treffer, Schiff
             koordinate (Koordinate): Position
         """
         self.__spielfeld[koordinate.x_position][koordinate.y_position] = status
@@ -60,7 +60,7 @@ class Spielfeld():
 
         Args:
             koordinate (Koordinate): Startpunkt
-            richtung (int): 0-Norden, 1-Osten, 2-Sueden, 3-Westen
+            richtung (Richtung): Norden, Osten, Sueden, Westen
             schiff (Schiff): Das zu plazierende Schiff
         """
         # Ermittle alle Koordinaten wo das Schiff sein wird
@@ -75,7 +75,7 @@ class Spielfeld():
         for koordinate_schiff in koordinaten_schiff:
             self.set_feld(Status.SCHIFF, koordinate_schiff)
 
-    def get_status_bei(self, koordinate: Koordinate) -> int:
+    def get_status_bei(self, koordinate: Koordinate) -> Satus:
         """
         Gibt den Status des Feldes an der entsprechenden Position zurueck
 
@@ -83,7 +83,7 @@ class Spielfeld():
             koordinate (Koordinate): Position welche ueberprueft wird
 
         Returns:
-            int: -1 daneben, 0 neutral/Wasser, 1 treffer, 2 Schiff
+            Status: daneben, asser, treffer, Schiff
         """
         return self.__spielfeld[koordinate.x_position][koordinate.y_position]
 
@@ -163,7 +163,7 @@ class Spielfeld():
 
         Args:
             koordinate (Koordinate): Start Position
-            richtung (int): 0-Norden, 1-Osten, 2-Sueden, 3-Westen
+            richtung (Richtung): 0-Norden, 1-Osten, 2-Sueden, 3-Westen
             anzahl_felder (int): wie weit in die Richtung gegangen wird
 
         Returns:
