@@ -18,14 +18,6 @@ class Spieler:
         self.__spielfeld_gegner = spielfeld_gegner
         self.__punkte = punkte
 
-    def set_name(self, name: str):
-        """Setzten des Spielernamens
-
-        Args: 
-            name (str): Der Name des Spielers 
-        """
-        self.__name = name
-
     def update_spielfeld_gegner(self, koordinate: Koordinate, status: int):
         """Aktualisieren des Gegner Spielfelds
 
@@ -44,10 +36,10 @@ class Spieler:
         """
         self.__spielfeld.set_feld(status, koordinate)
 
-    def add_punkt(self):
+    def add_punkt(self, punkte=1):
         """Hinzufügen eines Punktes
         """
-        self.__punkte += 1
+        self.__punkte += punkte
         
     def wird_abgeschossen(self, koordinate: Koordinate) -> int: 
         """Prüfen und ändern der Felder des eigenen Spielfelds ob oder ob nicht getroffen wurde
@@ -65,22 +57,20 @@ class Spieler:
         else:
             return -1
 
-    def get_spielfeld(self) -> Spielfeld:
+    @property
+    def spielfeld(self) -> Spielfeld:
         """Gibt das Spielfeld zurück
 
         Returns:
             spielfeld 
         """
-        return self.__spielfeld
+        return self.__spielfeld    
 
-
-    def set_spielfeld(self, spielfeld: Spielfeld):
-        """Setzten des Spielfelds
-
-        Args: 
-            spielfeld (Spieldfeld): Spielfeld des Spielers
+    @property
+    def spielfeld_gegner(self) -> Spielfeld:
+        """Gibt den Spickzettel vom Gegnersischen Spielfeld zurück
 
         Returns:
-            spielfeld
+            spielfeld_gegner 
         """
-        self.__spielfeld = spielfeld
+        return self.__spielfeld_gegner
