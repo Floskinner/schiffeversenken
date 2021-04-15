@@ -17,6 +17,9 @@ class Spielfeld():
             spielfeld int[][]: Fertiges Spielfeld zuordnen
         """
 
+        dimension = None
+        self.__spielfeld = None
+
         dimension = kwargs.get("dimension")
         self.__spielfeld: list = kwargs.get("spielfeld")
 
@@ -51,7 +54,7 @@ class Spielfeld():
         """
         self.__spielfeld[koordinate.x_position][koordinate.y_position] = status
 
-    def plaziere_schiff(self, koordinate: Koordinate, richtung: int, schiff: Schiff):
+    def plaziere_schiff(self, koordinate: Koordinate, richtung: Richtung, schiff: Schiff):
         """
         Plaziert das Schaff auf der Angegebenen Position in die entsprechende Richtung
 
@@ -155,7 +158,7 @@ class Spielfeld():
 
         return koordinaten
 
-    def __get_koordinaten_in_richtung(self, koordinate: Koordinate, richtung: int, anzahl_felder: int) -> list:
+    def __get_koordinaten_in_richtung(self, koordinate: Koordinate, richtung: Richtung, anzahl_felder: int) -> list:
         """Gibt die Koordinaten an, in welcher sich ein Schiff theoretisch befinden wird
 
         Args:
@@ -169,7 +172,7 @@ class Spielfeld():
         koordinaten_schiff = []
 
         # Norden
-        if richtung == Richtung.NORDEN.value:
+        if richtung == Richtung.NORDEN:
             for y_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position
@@ -179,7 +182,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Osten
-        elif richtung == Richtung.OSTEN.value:
+        elif richtung == Richtung.OSTEN:
             for x_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position + x_position_counter
@@ -189,7 +192,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Sueden
-        elif richtung == Richtung.SUEDEN.value:
+        elif richtung == Richtung.SUEDEN:
             for y_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position
@@ -199,7 +202,7 @@ class Spielfeld():
                 koordinaten_schiff.append(tmp_koordinate)
 
         # Westen
-        elif richtung == Richtung.WESTEN.value:
+        elif richtung == Richtung.WESTEN:
             for x_position_counter in range(anzahl_felder):
 
                 x_position = koordinate.x_position - x_position_counter
