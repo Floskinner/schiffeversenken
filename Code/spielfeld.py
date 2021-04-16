@@ -5,6 +5,7 @@ from koordinate import Koordinate
 from schiff import Schiff
 from helferklasse import Status, Richtung
 
+# TODO Kommentare anpassen
 
 class Spielfeld():
     """Klasse womit ein Spielfeld für 1 Person erstellt und verwaltet werden kann
@@ -75,7 +76,7 @@ class Spielfeld():
         for koordinate_schiff in koordinaten_schiff:
             self.set_feld(Status.SCHIFF, koordinate_schiff)
 
-    def get_status_bei(self, koordinate: Koordinate) -> Satus:
+    def get_status_bei(self, koordinate: Koordinate) -> Status:
         """
         Gibt den Status des Feldes an der entsprechenden Position zurueck
 
@@ -163,7 +164,7 @@ class Spielfeld():
 
         Args:
             koordinate (Koordinate): Start Position
-            richtung (Richtung): 0-Norden, 1-Osten, 2-Sueden, 3-Westen
+            richtung (Richtung): Norden, Osten, Sueden, Westen
             anzahl_felder (int): wie weit in die Richtung gegangen wird
 
         Returns:
