@@ -19,3 +19,6 @@ class Richtung(Enum):
 
 class Rahmenzeichen(Enum):
     HEAVY_VERTICAL = "\u2503"
+    #TODO Weitere Zeichen einfuegen
+
+#TODO Speichern und Lesen erstellen
