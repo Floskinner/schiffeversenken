@@ -36,7 +36,8 @@ class Test_Master(unittest.TestCase):
         self.master.print_spielfeld(test_spielfeld)
 
     def test_schiessen(self):
-        self.master.schiessen(self.spieler_1, self.spieler_2)
+        status:Status = self.master.schiessen(self.spieler_1, self.spieler_2, self.test_koordinate_treffer)
+        self.assertEqual(Status.TREFFER, status)
 
 
 if __name__ == '__main__':
