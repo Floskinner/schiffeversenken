@@ -1,11 +1,14 @@
 """[DocString]
 """
 #pylint: disable=c
+from typing import List
+import unittest
 from schiff import Schiff
 from koordinate import Koordinate
 from spieler import Spieler
 from spielfeld import Spielfeld
-from helferklasse import Rahmenzeichen, Richtung, Status
+from helferklasse import Farben, Rahmenzeichen, Richtung, Status, Speicherverwaltung
+from pynput import keyboard
 import sys
 import os
 import platform
@@ -15,8 +18,22 @@ import time
 class Master:
     """[summary]
     """
+    def __init__(self):
+        self.__speicherverwaltung = Speicherverwaltung()
+        self.__listener:keyboard.Listener = keyboard.Listener(on_press=self.esc_gedrueckt)
+        self.__schiffe:list = [Schiff("Schlachtschiff",5),
+        Schiff("Kreuzer",4), Schiff("Kreuzer",4), 
+        Schiff("Zerstoerer",3), Schiff("Zerstoerer",3),Schiff("Zerstoerer",3),
+        Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2)]
+        self.__speichern_flag = False
+        self.__spieler = list()
 
-    erlaubte_buchstaben:list = ["A","B","C","D","E","F","G","H","I","J"]
+    @property
+    def speichern_flag(self) -> bool:
+        """
+        Getter für speichern_flag
+        """
+        return self.__speichern_flag
 
     @property
     def spieler_1(self) -> Spieler:
@@ -75,7 +92,7 @@ class Master:
             if feld == Status.WASSER:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}   ", end='')
             elif feld == Status.SCHIFF:
-                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} # ", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {Farben.GRUEN.value}#{Farben.FARB_ENDE.value} ", end='')
             elif feld == Status.TREFFER:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} X ", end='')
             elif feld == Status.DANEBEN:
@@ -89,26 +106,29 @@ class Master:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}")
             j = j+1
 
-    def print_trennlinie(self):
+    def __print_trennlinie(self):
         i = 0
+        print("\t\t\t\t", end='')
         print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}", end='')
         while i < 43:
             print("\u2501", end='')
             i = i+1
         print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}")
 
-    def print_rahmen_oben(self):
+    def __print_rahmen_oben(self):
         # Erste Zeile des Spielfelds
         i = 0
+        print("\t\t\t\t", end='')
         print("\u250F", end='')
         while i < 43:
             print("\u2501", end='')
             i = i+1
         print("\u2513")
 
-    def print_rahmen_unten(self):
+    def __print_rahmen_unten(self):
         # Letzte Zeile des Spielfelds
         i = 0
+        print("\t\t\t\t", end='')
         print("\u2517", end='')
         while i < 43:
             print("\u2501", end='')
@@ -129,49 +149,66 @@ class Master:
         Gibt Spielfeld aus.
         """
         # Headerzeile
-        self.print_rahmen_oben()
+        self.__print_rahmen_oben()
+        print("\t\t\t\t", end='')
         self.__print_zeile([' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
-        self.print_trennlinie()
+        self.__print_trennlinie()
         cnt_zeile = 1
         # Drehe Spielfeld, damit man es einfacher zeichnen kann
         gedrehtes_spielfeld = self.__get_zeilen_von_spielfeld(spielfeld)
 
         for zeile in gedrehtes_spielfeld:
             if cnt_zeile == 10:
+                print("\t\t\t\t", end='')              
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile}", end='')
-            else:
+                
+            else:  
+                print("\t\t\t\t", end='')              
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile} ", end='')
+                
             self.__print_zeile(zeile)
             if cnt_zeile < 10:
-                self.print_trennlinie()
+                self.__print_trennlinie()
             else:
-                self.print_rahmen_unten()
+                self.__print_rahmen_unten()
             cnt_zeile = cnt_zeile+1
 
-    def neues_spiel(self):
-        """
-        Erstellt leeres Spielfeld,
-        fragt Spielernamen ab            
+    
+    def neues_spiel(self, spieler_anzahl:int=2):
+        """Für jeden Spieler den Namen einlesen, Schiffe platzieren
+
+        Args:
+            spieler_anzahl (int, optional): [description]. Defaults to 2.
         """
         self.clear_terminal()
-        name_spieler_1 = input("Name von Spieler 1: ")
-        spielfeld_spieler_1 = self.platziere_schiffe(name_spieler_1) 
-        self.__spieler_1 = Spieler(name_spieler_1, spielfeld_spieler_1, Spielfeld(), 0)
+        for anzahl in range(1,spieler_anzahl+1):
+            name_spieler = self.get_user_input_name(anzahl)
+            spielfeld_spieler = Spielfeld()
+            for schiff in self.__schiffe:
+                ist_platziert = False
+                while not ist_platziert:
+                    try:
+                        self.clear_terminal()
+                        self.print_spielfeld(spielfeld_spieler)
+                        print(f"{name_spieler}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
+                        koordinate:Koordinate = self.get_user_input_koordinate()
+                        richtung:Richtung = self.get_user_input_richtung()                   
+                        spielfeld_spieler = self.platziere_schiff(name_spieler, spielfeld_spieler, schiff, koordinate, richtung)
+                        ist_platziert = True
+                    except IndexError:
+                        print("Das Schiff kann so nicht platziert werden.")
+                        ist_platziert = False
+                    except ValueError:
+                        print("Ungueltige Eingabe.")
+            self.__spieler.append(Spieler(name_spieler, spielfeld_spieler, Spielfeld(), 0))
+            self.spieler_1 = self.__spieler[anzahl-1]
         self.clear_terminal()
-        name_spieler_2 = input("Name von Spieler 2: ")
-        spielfeld_spieler_2 = self.platziere_schiffe(name_spieler_2) 
-        self.__spieler_2 = Spieler(name_spieler_2,spielfeld_spieler_2,Spielfeld(),0)
+
 
     def toggle_spielzug(self):
         temp:Spieler = self.aktueller_spieler
         self.aktueller_spieler = self.aktueller_gegner
         self.aktueller_gegner = temp
-        # if self.aktueller_spieler == self.__spieler_1:
-        #     self.aktueller_spieler == self.__spieler_2
-        #     self.aktueller_gegner == self.__spieler_1
-        # elif self.aktueller_spieler == self.__spieler_2:
-        #     self.aktueller_spieler == self.__spieler_1
-        #     self.aktueller_gegner == self.__spieler_2
 
     def print_countdown(self, zeit: int = 3):
         while zeit:
@@ -182,69 +219,37 @@ class Master:
     def print_spielende(self):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
-    def schiessen(self, spieler: Spieler, gegner: Spieler, koordinate:Koordinate) -> Status:       
-        schuss_ergebnis:Status = spieler.wird_abgeschossen(koordinate)
-        if schuss_ergebnis == Status.TREFFER:
-            spieler.update_spielfeld_gegner(koordinate, Status.TREFFER)
-            gegner.update_spielfeld(koordinate, Status.TREFFER)
-            return Status.TREFFER
-        else:
-            spieler.update_spielfeld_gegner(koordinate, Status.DANEBEN)
-            return Status.DANEBEN
+
+
+    def schiessen(self, spieler: Spieler, gegner: Spieler, koordinate:Koordinate) -> Status:
+        try:     
+            schuss_ergebnis:Status = spieler.wird_abgeschossen(koordinate)
+            if schuss_ergebnis == Status.TREFFER:
+                spieler.update_spielfeld_gegner(koordinate, Status.TREFFER)
+                gegner.update_spielfeld(koordinate, Status.TREFFER)
+                return Status.TREFFER
+            else:
+                spieler.update_spielfeld_gegner(koordinate, Status.DANEBEN)
+                return Status.DANEBEN
+        except IndexError:
+            return Status.UNGUELTIG
 
     def get_user_input_koordinate(self)->Koordinate:
-        ist_buchstabe_erlaubt = False
-        while not ist_buchstabe_erlaubt:
-            buchstabe = input("Geben Sie den Buchstabenwert der Koordinate ein: ")
-            if buchstabe in self.erlaubte_buchstaben:
-                ist_buchstabe_erlaubt = True
-            else:                
-                print("Keine gültige Eingabe.")
-        
-        ist_zahl_erlaubt = False
-        while not ist_zahl_erlaubt:
-            zahl = input("Geben Sie den Zahlenwert der Koordinate ein: ")
-            if self.__ist_int(zahl):
-                if int(zahl) <= 10 and int(zahl) > 0:
-                    zahl = int(zahl)
-                    ist_zahl_erlaubt = True
-                else:
-                    print("Die Zahl muss größer als 0 und kleiner als 11 sein.") 
-            else:
-                print("Die Eingabe war keine ganze Zahl.")
-        return Koordinate(buchstabe, zahl)          
-                
-    def __ist_int(self, zahl) -> bool:
-        try:
-            int(zahl)
-            return True
-        except ValueError:
-            return False
+        koordinate = input("Gebe eine Koordinate ein: ")
+        koordinate_list = koordinate.split()
+        buchstabe = koordinate[0]
+        zahl = int(koordinate[1:])
+        return Koordinate(buchstabe, zahl)
 
-    def platziere_schiffe(self, name:str)->Spielfeld:
-        schiffe:list = [Schiff("Schlachtschiff",5),
-        Schiff("Kreuzer",4), Schiff("Kreuzer",4), 
-        Schiff("Zerstoerer",3), Schiff("Zerstoerer",3),Schiff("Zerstoerer",3),
-        Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2)]
+    def get_user_input_richtung(self) ->Richtung :
+        return Richtung(int(input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n")))
 
-        spielfeld = Spielfeld()
+    def get_user_input_name(self, spieler_nummer:int) -> str:
+        return input(f"Name von Spieler {spieler_nummer}: ")
 
-        for schiff in schiffe:
-            self.print_spielfeld(spielfeld)
-            print(f"{name}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
-            ist_platziert = False
-            while(not ist_platziert):
-                try:
-                    koordinate:Koordinate = self.get_user_input_koordinate()
-                    richtung = Richtung(int(input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n")))
-                    spielfeld.plaziere_schiff(koordinate, richtung, schiff)
-                    self.clear_terminal()
-                    ist_platziert = True
-                except IndexError:
-                    print("Das Schiff kann so nicht platziert werden.")
-                    ist_platziert = False
-                except ValueError:
-                    print("Ungueltige Eingabe.")
+    def platziere_schiff(self, name:str, spielfeld:Spielfeld, schiff:Schiff, koordinate:Koordinate, richtung:Richtung)->Spielfeld:
+        self.print_spielfeld(spielfeld)        
+        spielfeld.plaziere_schiff(koordinate, richtung, schiff)
         return spielfeld
 
     def print_willkommensnachricht(self):
@@ -280,8 +285,13 @@ class Master:
         """
         print("Menu:")
         auswahl = input("1 - Neues Spiel\n2 - Spiel laden\n")
-        if self.__ist_int(auswahl):
-            return int(auswahl)
+        ist_gueltig = False
+        while not ist_gueltig:
+            if isinstance(int(auswahl), int):
+                return int(auswahl)
+            else:
+                ist_gueltig = False
+
 
     def print_alles_fuer_spielzug(self):
         print(f"{self.aktueller_spieler.name} du bist dran.\n")
@@ -290,14 +300,7 @@ class Master:
         print("\nEigenes Spielfeld:")
         self.print_spielfeld(self.aktueller_spieler.spielfeld)
         print(f"{self.aktueller_spieler.name}, wo willst du hinschiessen?")
-        koordinate:Koordinate = self.get_user_input_koordinate()
-        schuss_ergebnis:Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
-        if schuss_ergebnis == Status.TREFFER:
-            print("Treffer!")
-        elif schuss_ergebnis == Status.DANEBEN:
-            print("Daneben!")
-
-
+        
     def clear_terminal(self):
         """
         Löscht Inhalt der Shell
@@ -307,14 +310,18 @@ class Master:
         if platform.system() == "Linux":
             os.system('clear')
 
+    def esc_gedrueckt(self, taste:keyboard.Key):
+        if taste == keyboard.Key.esc:
+            self.__speichern_flag = True
 
+         
     def spielen(self):
         """
         Hauptfunktion
         Args:
             _argv ([type]): [description]
-        """        
-        self.print_willkommensnachricht()
+        """      
+        self.print_willkommensnachricht()                
         time.sleep(3)
         self.clear_terminal()
 
@@ -328,16 +335,35 @@ class Master:
         
             
         spiel_vorbei:bool = False
+        
+        self.__listener.start()
         while not spiel_vorbei:
+            
             self.clear_terminal()
             self.print_alles_fuer_spielzug()
+            koordinate:Koordinate = self.get_user_input_koordinate()
+            gueltiger_schuss:bool = False
+            while not gueltiger_schuss:
+                schuss_ergebnis:Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
+                if schuss_ergebnis == Status.TREFFER:
+                    print("Treffer!")
+                    gueltiger_schuss = True
+                elif schuss_ergebnis == Status.DANEBEN:
+                    print("Daneben!")
+                    gueltiger_schuss = True
+                elif schuss_ergebnis == Status.UNGUELTIG:
+                    print("Ungueltige Koordinate!")
+
+            spiel_vorbei = self.aktueller_gegner.is_tot()
             self.print_countdown(5)
             self.toggle_spielzug()
+            if self.__speichern_flag:
+              self.__speicherverwaltung.speichern()  
+
 
 def main(_argv):
     master: Master = Master()
     master.spielen()
-
 
 if __name__ == '__main__':
     main(sys.argv)
