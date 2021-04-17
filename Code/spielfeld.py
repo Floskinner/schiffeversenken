@@ -5,6 +5,7 @@ from koordinate import Koordinate
 from schiff import Schiff
 from helferklasse import Status, Richtung
 
+# TODO Kommentare anpassen
 
 class Spielfeld():
     """Klasse womit ein Spielfeld für 1 Person erstellt und verwaltet werden kann
@@ -163,7 +164,7 @@ class Spielfeld():
 
         Args:
             koordinate (Koordinate): Start Position
-            richtung (Richtung): 0-Norden, 1-Osten, 2-Sueden, 3-Westen
+            richtung (Richtung): Norden, Osten, Sueden, Westen
             anzahl_felder (int): wie weit in die Richtung gegangen wird
 
         Returns:
