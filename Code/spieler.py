@@ -61,6 +61,14 @@ class Spieler:
 
         return self.__spielfeld.get_status_bei(koordinate)
 
+    def is_tot(self) -> bool:
+        """Spieler ist Tot wenn keine Schiffe mehr auf dem Spielfeld sind
+
+        Returns:
+            bool: True: Tot - False: Mindestens 1 Schiffsteil gibt es noch
+        """
+        return self.__spielfeld.alle_schiffe_zerstoert()
+
     @property
     def name(self) -> str:
         """Gibt Namen des Spielers zurück
@@ -87,3 +95,12 @@ class Spieler:
             spielfeld_gegner 
         """
         return self.__spielfeld_gegner
+
+    @property
+    def punkte(self) -> int:
+        """Gibt die Punkte vom Spieler zurueck
+
+        Returns:
+            int: Punkte
+        """
+        return self.__punkte
