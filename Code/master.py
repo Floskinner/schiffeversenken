@@ -1,5 +1,6 @@
 """[DocString]
 """
+#pylint: disable=c
 from schiff import Schiff
 from koordinate import Koordinate
 from spieler import Spieler
@@ -88,7 +89,7 @@ class Master:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}")
             j = j+1
 
-    def __print_trennlinie(self):
+    def print_trennlinie(self):
         i = 0
         print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}", end='')
         while i < 43:
@@ -96,7 +97,7 @@ class Master:
             i = i+1
         print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}")
 
-    def __print_rahmen_oben(self):
+    def print_rahmen_oben(self):
         # Erste Zeile des Spielfelds
         i = 0
         print("\u250F", end='')
@@ -105,8 +106,8 @@ class Master:
             i = i+1
         print("\u2513")
 
-    def __print_rahmen_unten(self):
-        # Erste Zeile des Spielfelds
+    def print_rahmen_unten(self):
+        # Letzte Zeile des Spielfelds
         i = 0
         print("\u2517", end='')
         while i < 43:
@@ -128,9 +129,9 @@ class Master:
         Gibt Spielfeld aus.
         """
         # Headerzeile
-        self.__print_rahmen_oben()
+        self.print_rahmen_oben()
         self.__print_zeile([' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
-        self.__print_trennlinie()
+        self.print_trennlinie()
         cnt_zeile = 1
         # Drehe Spielfeld, damit man es einfacher zeichnen kann
         gedrehtes_spielfeld = self.__get_zeilen_von_spielfeld(spielfeld)
@@ -142,9 +143,9 @@ class Master:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile} ", end='')
             self.__print_zeile(zeile)
             if cnt_zeile < 10:
-                self.__print_trennlinie()
+                self.print_trennlinie()
             else:
-                self.__print_rahmen_unten()
+                self.print_rahmen_unten()
             cnt_zeile = cnt_zeile+1
 
     def neues_spiel(self):
@@ -181,16 +182,13 @@ class Master:
     def print_spielende(self):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
-    def schiessen(self, spieler: Spieler, gegner: Spieler, koordinate:Koordinate) -> Status:
-        print(f"{spieler.name}, wo willst du hinschiessen?")
+    def schiessen(self, spieler: Spieler, gegner: Spieler, koordinate:Koordinate) -> Status:       
         schuss_ergebnis:Status = spieler.wird_abgeschossen(koordinate)
         if schuss_ergebnis == Status.TREFFER:
-            print("Treffer!")
             spieler.update_spielfeld_gegner(koordinate, Status.TREFFER)
             gegner.update_spielfeld(koordinate, Status.TREFFER)
             return Status.TREFFER
         else:
-            print("Daneben!")
             spieler.update_spielfeld_gegner(koordinate, Status.DANEBEN)
             return Status.DANEBEN
 
@@ -289,10 +287,15 @@ class Master:
         print(f"{self.aktueller_spieler.name} du bist dran.\n")
         print("Hier hast du schon ueberall hingeschossen: ")
         self.print_spielfeld(self.aktueller_spieler.spielfeld_gegner)
-        print("\nEigenes Spielfeld")
+        print("\nEigenes Spielfeld:")
         self.print_spielfeld(self.aktueller_spieler.spielfeld)
+        print(f"{self.aktueller_spieler.name}, wo willst du hinschiessen?")
         koordinate:Koordinate = self.get_user_input_koordinate()
-        self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
+        schuss_ergebnis:Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
+        if schuss_ergebnis == Status.TREFFER:
+            print("Treffer!")
+        elif schuss_ergebnis == Status.DANEBEN:
+            print("Daneben!")
 
 
     def clear_terminal(self):
@@ -322,12 +325,13 @@ class Master:
             self.aktueller_gegner = self.spieler_2
         elif auswahl == 2:
             pass
-        self.clear_terminal()
+        
             
         spiel_vorbei:bool = False
         while not spiel_vorbei:
+            self.clear_terminal()
             self.print_alles_fuer_spielzug()
-            self.print_countdown(3)
+            self.print_countdown(5)
             self.toggle_spielzug()
 
 def main(_argv):
