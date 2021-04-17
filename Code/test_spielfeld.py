@@ -1,4 +1,6 @@
 import unittest
+import random
+
 from spielfeld import Spielfeld
 from koordinate import Koordinate
 from schiff import Schiff
@@ -80,11 +82,14 @@ class Test_Spielfeld(unittest.TestCase):
 
     def test_set_feld(self):
         spielfeld_obj = Spielfeld()
-        status = Status.TREFFER
-        position = Koordinate(1, 2)
-        spielfeld_obj.set_feld(status, position)
+        statusse = list(Status)
 
-        self.assertEqual(spielfeld_obj.spielfeld[0][1], status)
+        for y in range(1, 11):
+            for x in range(1, 11):
+                status = random.choice(statusse)
+                position = Koordinate(x, y)
+                spielfeld_obj.set_feld(status, position)
+                self.assertEqual(spielfeld_obj.spielfeld[x-1][y-1], status)
 
     def test_plaziere_schiff(self):
 
@@ -135,16 +140,19 @@ class Test_Spielfeld(unittest.TestCase):
 
 
     def test_get_status_bei(self):
-        spielfeld_obj = Spielfeld(spielfeld=self.befuelltes_spielfeld)
+        spielfeld_obj = Spielfeld()
+        statusse = list(Status)
 
-        for x in range(len(self.befuelltes_spielfeld)):
-            for y in range(len(self.befuelltes_spielfeld[x])):
-                koordinate = Koordinate(x+1, y+1)
+        for y in range(1, 11):
+            for x in range(1, 11):
+                koordinate = Koordinate(x, y)
 
-                referenz_status = self.befuelltes_spielfeld[koordinate.x_position][koordinate.y_position]
+                status = random.choice(statusse)
+
+                spielfeld_obj.spielfeld[x-1][y-1] = status
                 spielfeld_status = spielfeld_obj.get_status_bei(koordinate)
 
-                self.assertEqual(referenz_status, spielfeld_status)
+                self.assertEqual(status, spielfeld_status)
 
     def test_alle_schiffe_zerstoert(self):
         befuelltes_spielfeld_obj = Spielfeld(spielfeld=self.befuelltes_spielfeld)
