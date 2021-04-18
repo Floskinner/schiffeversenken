@@ -55,23 +55,22 @@ class Spielfeld():
         """
         self.__spielfeld[koordinate.x_position][koordinate.y_position] = status
 
-    def plaziere_schiff(self, koordinate: Koordinate, richtung: Richtung, schiff: Schiff):
+    def plaziere_schiff(self, koordinate: Koordinate, schiff: Schiff):
         """
         Plaziert das Schaff auf der Angegebenen Position in die entsprechende Richtung
         Rais: IndexError 
 
         Args:
-            koordinate (Koordinate): Startpunkt
-            richtung (Richtung): Norden, Osten, Sueden, Westen
+            koordinate (Koordinate): Startpunkt mit Richtung
             schiff (Schiff): Das zu plazierende Schiff
         """
         # Ermittle alle Koordinaten wo das Schiff sein wird
-        koordinaten_schiff = self.__get_koordinaten_in_richtung(koordinate, richtung, schiff.groeße)
+        koordinaten_schiff = self.__get_koordinaten_in_richtung(koordinate, schiff.groeße)
 
         # Checke ob das Schiff platziert werden darf
         for koordinate_schiff in koordinaten_schiff:
             if not self.__valides_plazieren(koordinate_schiff):
-                raise IndexError(f"Das Schiff kann so nicht plaziert werden! Start:{koordinate.x_position},{koordinate.y_position} Richtung:{richtung}")
+                raise IndexError(f"Das Schiff kann so nicht plaziert werden! Start:{koordinate.x_position},{koordinate.y_position} Richtung:{koordinate.richtung}")
 
         # Plaziere Schiff
         for koordinate_schiff in koordinaten_schiff:
@@ -160,18 +159,18 @@ class Spielfeld():
 
         return koordinaten
 
-    def __get_koordinaten_in_richtung(self, koordinate: Koordinate, richtung: Richtung, anzahl_felder: int) -> list:
+    def __get_koordinaten_in_richtung(self, koordinate: Koordinate, anzahl_felder: int) -> list:
         """Gibt die Koordinaten an, in welcher sich ein Schiff theoretisch befinden wird
 
         Args:
-            koordinate (Koordinate): Start Position
-            richtung (Richtung): Norden, Osten, Sueden, Westen
+            koordinate (Koordinate): Start Position mit Richtung
             anzahl_felder (int): wie weit in die Richtung gegangen wird
 
         Returns:
             list: Alle Koordinaten
         """
         koordinaten_schiff = []
+        richtung = koordinate.richtung
 
         # Norden
         if richtung == Richtung.NORDEN:
