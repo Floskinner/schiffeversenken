@@ -6,8 +6,8 @@ class Schiff():
     """
 
     def __init__(self, name: str, groeße: int):
-        self.__name = name
-        self.__groeße = groeße
+        self.__name: str = name
+        self.__groeße: int = groeße
 
     @property
     def name(self) -> str:

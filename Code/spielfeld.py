@@ -5,24 +5,27 @@ from koordinate import Koordinate
 from schiff import Schiff
 from helferklasse import Status, Richtung
 
+from typing import Optional, Union
+
 # TODO Kommentare anpassen
+
 
 class Spielfeld():
     """Klasse womit ein Spielfeld für 1 Person erstellt und verwaltet werden kann
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Union[int, list[list[int]]]):
         """Erstelle Spielfeld
         kwargs (dict):
             dimension (int) = 10: Veraendert die groesse vom Spielfeld
-            spielfeld int[][]: Fertiges Spielfeld zuordnen
+            spielfeld list[list[int]]]: Fertiges Spielfeld zuordnen
         """
 
-        dimension = None
-        self.__spielfeld = None
+        dimension: Optional[int] = None
+        self.__spielfeld: Optional[list[list[int]]] = None
 
         dimension = kwargs.get("dimension")
-        self.__spielfeld: list = kwargs.get("spielfeld")
+        self.__spielfeld = kwargs.get("spielfeld")
 
         if dimension is None:
             dimension = 10
@@ -34,16 +37,21 @@ class Spielfeld():
                 self.__spielfeld[x_position] = [Status.WASSER] * dimension
 
     @property
-    def spielfeld(self) -> list:
+    def spielfeld(self) -> list[list[int]]:
         """Getter fuer Spielfeld
 
         Returns:
-            int[][]: Spielfeld
+            list[list[int]]: Spielfeld
         """
         return self.__spielfeld
 
     @spielfeld.setter
-    def spielfeld(self, spielfeld: list):
+    def spielfeld(self, spielfeld: list[list[int]]):
+        """Setter fuer Spielfeld
+
+        Args:
+            spielfeld (list[list[int]]): Spielfeld
+        """
         self.__spielfeld = spielfeld
 
     def set_feld(self, status: Status, koordinate: Koordinate):
@@ -57,7 +65,7 @@ class Spielfeld():
 
     def plaziere_schiff(self, koordinate: Koordinate, richtung: Richtung, schiff: Schiff):
         """
-        Plaziert das Schaff auf der Angegebenen Position in die entsprechende Richtung
+        Plaziert das Schiff auf der Angegebenen Position in die entsprechende Richtung
         Rais: IndexError 
 
         Args:
@@ -66,7 +74,7 @@ class Spielfeld():
             schiff (Schiff): Das zu plazierende Schiff
         """
         # Ermittle alle Koordinaten wo das Schiff sein wird
-        koordinaten_schiff = self.__get_koordinaten_in_richtung(koordinate, richtung, schiff.groeße)
+        koordinaten_schiff: list[Koordinate] = self.__get_koordinaten_in_richtung(koordinate, richtung, schiff.groeße)
 
         # Checke ob das Schiff platziert werden darf
         for koordinate_schiff in koordinaten_schiff:
@@ -94,7 +102,7 @@ class Spielfeld():
         auf dem Spielfeld vorhanden ist
 
         Returns:
-            Boolean: True - Kein Schiffsteil mehr uebrig, False - Mindestens ein Teil uebrig
+            bool: True - Kein Schiffsteil mehr uebrig, False - Mindestens ein Teil uebrig
         """
         for x_felder in self.__spielfeld:
             for feld in x_felder:
@@ -119,19 +127,19 @@ class Spielfeld():
         Returns:
             bool: True - nur Wasser, False - nicht nur Wasser
         """
-        koordinaten = self.__get_koordinaten_drumherum(koordinate)
+        koordinaten: list[Koordinate] = self.__get_koordinaten_drumherum(koordinate)
 
         if len(koordinaten) < 4:
             return False
 
         for valide_koordinate in koordinaten:
-            tmp_status = self.get_status_bei(valide_koordinate)
+            tmp_status: Status = self.get_status_bei(valide_koordinate)
             if tmp_status != Status.WASSER:
                 return False
 
         return True
 
-    def __get_koordinaten_drumherum(self, koordinate: Koordinate) -> list:
+    def __get_koordinaten_drumherum(self, koordinate: Koordinate) -> list[Koordinate]:
         """Gibt alle moeglichen Koordinaten um eine entsprechende Position inklusive die uebergebene Position selbst
 
         Args:
@@ -160,7 +168,7 @@ class Spielfeld():
 
         return koordinaten
 
-    def __get_koordinaten_in_richtung(self, koordinate: Koordinate, richtung: Richtung, anzahl_felder: int) -> list:
+    def __get_koordinaten_in_richtung(self, koordinate: Koordinate, richtung: Richtung, anzahl_felder: int) -> list[Koordinate]:
         """Gibt die Koordinaten an, in welcher sich ein Schiff theoretisch befinden wird
 
         Args:
@@ -169,9 +177,9 @@ class Spielfeld():
             anzahl_felder (int): wie weit in die Richtung gegangen wird
 
         Returns:
-            list: Alle Koordinaten
+            list[Koordinate]: Alle Koordinaten
         """
-        koordinaten_schiff = []
+        koordinaten_schiff: [list[Koordinate]] = list()
 
         # Norden
         if richtung == Richtung.NORDEN:
