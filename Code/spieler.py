@@ -89,7 +89,7 @@ class Spieler:
 
     @property
     def spielfeld_gegner(self) -> Spielfeld:
-        """Gibt den Spickzettel vom Gegnersischen Spielfeld zurück
+        """Gibt den Spickzettel vom gegnerischen Spielfeld zurück
 
         Returns:
             spielfeld_gegner 

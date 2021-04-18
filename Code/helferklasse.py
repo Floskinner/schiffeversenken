@@ -1,4 +1,6 @@
+import datetime
 from enum import Enum, unique
+from datetime import datetime
 
 
 @unique
@@ -7,6 +9,12 @@ class Status(Enum):
     WASSER = 0
     TREFFER = 1
     SCHIFF = 2
+    UNGUELTIG = 3
+
+@unique
+class Farben(Enum):
+    GRUEN = "\033[0;32m"
+    FARB_ENDE = "\033[0m"
 
 
 @unique
@@ -20,5 +28,11 @@ class Richtung(Enum):
 class Rahmenzeichen(Enum):
     HEAVY_VERTICAL = "\u2503"
     #TODO Weitere Zeichen einfuegen
+
+class Speicherverwaltung():
+
+    def speichern(self, pfad:str=f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json"):
+        print(pfad)
+
 
 #TODO Speichern und Lesen erstellen
