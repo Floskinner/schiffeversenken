@@ -58,6 +58,7 @@ class Spielfeld():
     def plaziere_schiff(self, koordinate: Koordinate, richtung: Richtung, schiff: Schiff):
         """
         Plaziert das Schaff auf der Angegebenen Position in die entsprechende Richtung
+        Rais: IndexError 
 
         Args:
             koordinate (Koordinate): Startpunkt
