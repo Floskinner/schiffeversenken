@@ -363,9 +363,8 @@ class Master:
         else:
             self.__speicherverwaltung.speichern(daten, pfad)
 
-    def __lade_spielstand(self):
+    def __lade_spielstand(self, pfad: str):
         try:
-            pfad: str = input("Pfad zum Spielstand: ")
             daten: dict = self.__speicherverwaltung.laden(pfad)
 
             aktueller_spieler_master = daten["master"]["aktueller_spieler"]
@@ -403,7 +402,8 @@ class Master:
             self.aktueller_spieler = self.spieler_1
             self.aktueller_gegner = self.spieler_2
         elif auswahl == 2:
-            self.__lade_spielstand()
+            pfad: str = input("Pfad zum Spielstand: ").strip()
+            self.__lade_spielstand(pfad)
         
             
         spiel_vorbei:bool = False
