@@ -1,13 +1,11 @@
 """Entahelt die Klasse Spielfeld fuer das Spiel Schiffeversenken
 """
 
+from typing import Optional, Union
+
 from koordinate import Koordinate
 from schiff import Schiff
 from helferklasse import Status, Richtung
-
-from typing import Optional, Union
-
-# TODO Kommentare anpassen
 
 
 class Spielfeld():
@@ -66,7 +64,7 @@ class Spielfeld():
     def plaziere_schiff(self, koordinate: Koordinate, schiff: Schiff):
         """
         Plaziert das Schiff auf der Angegebenen Position in die entsprechende Richtung
-        Rais: IndexError 
+        Rais: IndexError
 
         Args:
             koordinate (Koordinate): Startpunkt mit Richtung
@@ -78,7 +76,8 @@ class Spielfeld():
         # Checke ob das Schiff platziert werden darf
         for koordinate_schiff in koordinaten_schiff:
             if not self.__valides_plazieren(koordinate_schiff):
-                raise IndexError(f"Das Schiff kann so nicht plaziert werden! Start:{koordinate.x_position},{koordinate.y_position} Richtung:{koordinate.richtung}")
+                raise IndexError(
+                    f"Das Schiff kann so nicht plaziert werden! Start:{koordinate.x_position},{koordinate.y_position} Richtung:{koordinate.richtung}")
 
         # Plaziere Schiff
         for koordinate_schiff in koordinaten_schiff:
@@ -167,7 +166,8 @@ class Spielfeld():
 
         return koordinaten
 
-    def __get_koordinaten_in_richtung(self, koordinate: Koordinate, anzahl_felder: int) -> list:
+    @staticmethod
+    def __get_koordinaten_in_richtung(koordinate: Koordinate, anzahl_felder: int) -> list:
         """Gibt die Koordinaten an, in welcher sich ein Schiff theoretisch befinden wird
 
         Args:
