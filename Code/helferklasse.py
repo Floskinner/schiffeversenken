@@ -39,7 +39,7 @@ def user_input(text: str, datentyp: Union[str, int], erlaubte_werte: Optional[Un
 
     while not ist_valide:
         try:
-            data = input(text)
+            data = input(text).strip()
 
             if isinstance(datentyp, int):
                 data = int(data)
@@ -55,14 +55,12 @@ def user_input(text: str, datentyp: Union[str, int], erlaubte_werte: Optional[Un
     return data
 
 
-class Speicherverwaltung():
+def speichern(daten: dict, pfad: str = f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json"):
+    with open(pfad, 'w') as outfile:
+        json.dump(daten, outfile)
 
-    def speichern(self, daten: dict, pfad: str = f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json"):
-        with open(pfad, 'w') as outfile:
-            json.dump(daten, outfile)
+def laden(pfad: str) -> dict:
+    with open(pfad) as json_file:
+        daten = json.load(json_file)
 
-    def laden(self, pfad: str) -> dict:
-        with open(pfad) as json_file:
-            daten = json.load(json_file)
-
-        return daten
+    return daten

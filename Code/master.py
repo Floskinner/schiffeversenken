@@ -10,7 +10,7 @@ from schiff import Schiff
 from koordinate import Koordinate
 from spieler import Spieler
 from spielfeld import Spielfeld
-from helferklasse import Farben, Rahmenzeichen, Richtung, Status, Speicherverwaltung
+from helferklasse import Farben, Rahmenzeichen, Richtung, Status, speichern, laden, user_input
 
 
 class Master:
@@ -18,7 +18,6 @@ class Master:
     """
 
     def __init__(self):
-        self.__speicherverwaltung = Speicherverwaltung()
         self.__ist_spiel_vorbei = False
         self.__schiffe: list = [Schiff("Schlachtschiff", 5),
                                 Schiff("Kreuzer", 4), Schiff("Kreuzer", 4),
@@ -423,16 +422,13 @@ class Master:
         """Fragt den User nach einem Pfad und speichert diesen am angegeben Ort. Wenn String leer, dann aktueller Pfad
         """
 
-        pfad = input("Speicherpfad vom Spielstand (Leer - aktueller Pfad): ")
+        pfad = user_input("Pfad zum Speichern (optional auch leer):", str)
         daten = self.__speicher_spielstand_daten()
-        if pfad.strip() == "":
-            self.__speicherverwaltung.speichern(daten)
-        else:
-            self.__speicherverwaltung.speichern(daten, pfad)
+        speichern(daten(daten, pfad))
 
     def __lade_spielstand(self, pfad: str):
         try:
-            daten: dict = self.__speicherverwaltung.laden(pfad)
+            daten: dict = laden(pfad)
 
             aktueller_spieler_master = daten["master"]["aktueller_spieler"]
             aktueller_spieler_gegner_master = daten["master"]["aktueller_gegner"]
@@ -518,7 +514,7 @@ class Master:
             self.aktueller_spieler = self.spieler_1
             self.aktueller_gegner = self.spieler_2
         elif auswahl == 2:
-            pfad: str = input("Pfad zum Spielstand: ").strip()
+            pfad: str = user_input("Pfad zum Spielstand: ", str)
             self.__lade_spielstand(pfad)
 
 
