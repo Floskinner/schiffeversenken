@@ -16,10 +16,10 @@ class Spieler:
             spielfeld_gegner (Spielfeld): Spielfeld des Gegners
             punkte (int): Punktestand der gewonnenen Spiele
         """
-        self.__name = name
-        self.__spielfeld = spielfeld
-        self.__spielfeld_gegner = spielfeld_gegner
-        self.__punkte = punkte
+        self.__name: str = name
+        self.__spielfeld: Spielfeld = spielfeld
+        self.__spielfeld_gegner: Spielfeld = spielfeld_gegner
+        self.__punkte: int = punkte
 
     def update_spielfeld_gegner(self, koordinate: Koordinate, status: Status):
         """Aktualisieren des Gegner Spielfelds
@@ -39,7 +39,7 @@ class Spieler:
         """
         self.__spielfeld.set_feld(status, koordinate)
 
-    def add_punkt(self, punkte=1):
+    def add_punkt(self, punkte: int = 1):
         """Hinzufügen eines Punktes
         """
         self.__punkte += punkte

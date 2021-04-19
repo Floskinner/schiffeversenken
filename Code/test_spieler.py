@@ -88,3 +88,14 @@ class Test_Spieler(unittest.TestCase):
                     return_schuss = test_spieler.wird_abgeschossen(koordinate)
 
                     self.assertEqual(return_schuss, status)
+
+
+    def test_is_tot(self):
+        test_spieler = Spieler("TestName", Spielfeld(), Spielfeld(), 0)
+
+        #Spielfeld von vorne rein Leer - somit kein Schiff mehr vorhanden -> tot
+        self.assertEqual(test_spieler.is_tot(), True)
+
+        test_spieler.update_spielfeld(Koordinate(1,1), Status.SCHIFF)
+
+        self.assertEqual(test_spieler.is_tot(), False)
