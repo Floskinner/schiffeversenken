@@ -70,6 +70,11 @@ class Master:
 
     @aktueller_spieler.setter
     def aktueller_spieler(self, aktueller_spieler: Spieler):
+        """Setter fuer aktueller_spieler
+
+        Args:
+            aktueller_spieler (Spieler): aktueller Spieler
+        """
         self.__aktueller_spieler = aktueller_spieler
 
     @property
@@ -206,8 +211,7 @@ class Master:
                         koordinate: Koordinate = self.get_user_input_koordinate()
                         richtung: Richtung = self.get_user_input_richtung()
                         koordinate.richtung = richtung
-                        spielfeld_spieler = self.platziere_schiff(
-                            name_spieler, spielfeld_spieler, schiff, koordinate)
+                        spielfeld_spieler = self.platziere_schiff(spielfeld_spieler, schiff, koordinate)
                         ist_platziert = True
                     except IndexError:
                         print(
@@ -225,24 +229,41 @@ class Master:
         self.clear_terminal()
 
     def toggle_spielzug(self):
+        """Tausche aktueller_spieler und aktueller_gegner
+        """
         temp: Spieler = self.aktueller_spieler
         self.aktueller_spieler = self.aktueller_gegner
         self.aktueller_gegner = temp
 
     @staticmethod
     def print_countdown(zeit: int = 3):
+        """Zaehle einen Countdown herunter
+
+        Args:
+            zeit (int, optional): Die Sekunden die, der Countdown brauchen soll. Defaults to 3.
+        """
         while zeit:
             print(f"Anzeige wird in {zeit} Sekunden geloescht.")
             time.sleep(1)
             zeit -= 1
 
-    @staticmethod
-    def print_spielende():
+    def print_spielende(self):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
+        print(f"{self.__aktueller_spieler} hat gewonnen! Glueckwunsch!")
 
     @staticmethod
     def schiessen(spieler: Spieler, gegner: Spieler, koordinate: Koordinate) -> Status:
+        """Schuss auf Koordinate.
+
+        Args:
+            spieler (Spieler): Angreifer
+            gegner (Spieler): Gegner
+            koordinate (Koordinate): Wohin geschossen werden soll
+
+        Returns:
+            Status: Status des Treffers
+        """
         try:
             schuss_ergebnis: Status = spieler.wird_abgeschossen(koordinate)
             if schuss_ergebnis == Status.TREFFER:
@@ -256,6 +277,11 @@ class Master:
 
     @staticmethod
     def get_user_input_koordinate() -> Koordinate:
+        """Abfrage Koordinate von Konsole
+
+        Returns:
+            Koordinate: koordinate
+        """
         koordinate = input("Gebe eine Koordinate ein: ").strip()
         buchstabe = koordinate[0]
         zahl = int(koordinate[1:])
@@ -263,13 +289,36 @@ class Master:
 
     @staticmethod
     def get_user_input_richtung() -> Richtung:
+        """Abfrage der Richtung in die das Schiff platziert werden soll.
+
+        Returns:
+            Richtung: richtung
+        """
         return Richtung(int(input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n").strip()))
 
     @staticmethod
     def get_user_input_name(spieler_nummer: int) -> str:
+        """Abfrage eines Spielernamens von Konsole
+
+        Args:
+            spieler_nummer (int): Spieler, der gerade dran ist
+
+        Returns:
+            str: Spielername des Spielers
+        """
         return input(f"Name von Spieler {spieler_nummer}: ")
 
     def platziere_schiff(self, spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate) -> Spielfeld:
+        """Uebergebenes Schiff wird platziert
+
+        Args:
+            spielfeld (Spielfeld): das Spielfeld, wo das Schiff platziert werden soll
+            schiff (Schiff): das Schiff, welches platziert werden soll
+            koordinate (Koordinate): Koordinate und Richtung, wo das Schiff platziert werden soll
+
+        Returns:
+            Spielfeld: Spielfeld mit platziertem Schiff
+        """
         self.print_spielfeld(spielfeld)
         spielfeld.plaziere_schiff(koordinate, schiff)
         return spielfeld
@@ -306,9 +355,10 @@ class Master:
 
     @staticmethod
     def print_menu() -> int:
-        """
-        Gibt Menu aus: 1 - Neues Spiel
-                       2 - Spiel laden
+        """Ausgabe des Menus und Einlesen einer gueltigen Option
+
+        Returns:
+            int: gewaehlte Option
         """
         ist_gueltig = False
         print("Menu:")
@@ -320,7 +370,7 @@ class Master:
             except ValueError:
                 ist_gueltig = False
 
-    def print_alles_fuer_spielzug(self):
+    def __print_alles_fuer_spielzug(self):
         print(f"{self.aktueller_spieler.name} du bist dran.\n")
         print("Hier hast du schon ueberall hingeschossen: ")
         self.print_spielfeld(self.aktueller_spieler.spielfeld_gegner)
@@ -399,17 +449,14 @@ class Master:
             aktueller_spieler_gegner_name = aktueller_spieler_gegner_master["name"]
             aktueller_spieler_gegner_punkte = aktueller_spieler_gegner_master["punkte"]
             aktueller_spieler_gegner_spielfeld = daten[aktueller_spieler_gegner_name]["spielfeld"]
-            aktueller_spieler_gegner_spielfeld_gegner = daten[
-                aktueller_spieler_gegner_name]["spielfeld_gegner"]
+            aktueller_spieler_gegner_spielfeld_gegner = daten[aktueller_spieler_gegner_name]["spielfeld_gegner"]
 
-            self.__aktueller_spieler = Spieler(
-                aktueller_spieler_name, aktueller_spieler_spielfeld, aktueller_spieler_spielfeld, aktueller_spieler_punkte)
+            self.__aktueller_spieler = Spieler(aktueller_spieler_name, aktueller_spieler_spielfeld, aktueller_spieler_spielfeld, aktueller_spieler_punkte)
             self.__aktueller_gegner = Spieler(aktueller_spieler_gegner_name, aktueller_spieler_gegner_spielfeld,
                                               aktueller_spieler_gegner_spielfeld, aktueller_spieler_gegner_punkte)
 
         except KeyError:
-            print(
-                "Gespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
+            print("Gespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
             exit(self, 1)
         except:
             print("Fehler beim Laden der Daten! Bitte neu versuchen")
@@ -430,7 +477,7 @@ class Master:
 
         while not self.__ist_spiel_vorbei:
             self.clear_terminal()
-            self.print_alles_fuer_spielzug()
+            self.__print_alles_fuer_spielzug()
             koordinate: Koordinate = self.get_user_input_koordinate()
             gueltiger_schuss: bool = False
             while not gueltiger_schuss:
@@ -441,12 +488,22 @@ class Master:
             if True:
                 self.__speicher_spielstand()
 
+        if self.__ist_spiel_vorbei:
+            self.print_spielende()
+
     def fuehre_spielzug_aus(self, koordinate: Koordinate) -> bool:
+        """Spielzug (Schuss) ausfuehren.
+
+        Args:
+            koordinate (Koordinate): Wohin geschossen werden soll.
+
+        Returns:
+            bool: ob Koordinate gueltig
+        """
         schuss_ergebnis: Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
         if schuss_ergebnis == Status.TREFFER:
             print("Treffer!")
             return True
-            
         if schuss_ergebnis == Status.DANEBEN:
             print("Daneben!")
             return True
@@ -455,6 +512,11 @@ class Master:
 
 
 def main(_argv):
+    """Main, die das Modul schiffeversenken ausfuehrt.
+
+    Args:
+        _argv ([type]):
+    """
     master: Master = Master()
     master.spielen()
 

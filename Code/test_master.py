@@ -93,7 +93,7 @@ class Test_Master(unittest.TestCase):
         self.assertEqual(Status.UNGUELTIG, status)
 
     def test_platziere_schiffe(self):
-        spielfeld:Spielfeld = self.master.platziere_schiff(self.master.aktueller_spieler.name, Spielfeld(), Schiff("Schlachtschiff", 5), Koordinate("A",1, Richtung.SUEDEN))
+        spielfeld:Spielfeld = self.master.platziere_schiff(Spielfeld(), Schiff("Schlachtschiff", 5), Koordinate("A",1, Richtung.SUEDEN))
         with patch('sys.stdout', new=StringIO()) as fake_out:
             self.master.print_spielfeld(spielfeld)
             count_schiffe = fake_out.getvalue().count('#')
@@ -152,8 +152,8 @@ class Test_Master(unittest.TestCase):
         ungueltig:bool = self.master.fuehre_spielzug_aus(self.test_ungueltige_koordinate)
         self.assertEqual(ungueltig, False)
 
-    def test_print_alles_fuer_spielzug(self):
-        self.master.print_alles_fuer_spielzug()
+    # def test_print_alles_fuer_spielzug(self):
+    #     self.master.print_alles_fuer_spielzug()
 
     @unittest.mock.patch('os.system')
     def test_clear_terminal(self, os_system:os):
