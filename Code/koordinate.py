@@ -7,7 +7,7 @@ class Koordinate:
     die gespeicherten X und Y Werte direkt einem Array-Index zugeordnet werden koennen
     """
 
-    def __init__(self, x_wert: Union[int, str], y_wert: Union[int, str], richtung:Optional(Richtung) = None):
+    def __init__(self, x_wert: Union[int, str], y_wert: Union[int, str], richtung:Optional[Richtung] = None):
         """Usereingaben werden als Array freundliche Werte gespeichert mit Optionaler Richtung
 
         Args:
