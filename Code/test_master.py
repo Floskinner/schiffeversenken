@@ -1,3 +1,4 @@
+#pylint: disable=c
 from spieler import Spieler
 import unittest
 from spielfeld import Spielfeld
@@ -7,7 +8,8 @@ from master import Master
 from helferklasse import Richtung, Status
 from io import StringIO
 from unittest.mock import patch
-from pynput import keyboard
+import os
+import platform
 
 
 class Test_Master(unittest.TestCase):
@@ -91,21 +93,76 @@ class Test_Master(unittest.TestCase):
         self.assertEqual(Status.UNGUELTIG, status)
 
     def test_platziere_schiffe(self):
-        spielfeld:Spielfeld = self.master.platziere_schiff(self.master.aktueller_spieler.name, Spielfeld(), Schiff("Schlachtschiff", 5), 
-        Koordinate("A",1), Richtung.SUEDEN)
+        spielfeld:Spielfeld = self.master.platziere_schiff(self.master.aktueller_spieler.name, Spielfeld(), Schiff("Schlachtschiff", 5), Koordinate("A",1, Richtung.SUEDEN))
         with patch('sys.stdout', new=StringIO()) as fake_out:
             self.master.print_spielfeld(spielfeld)
             count_schiffe = fake_out.getvalue().count('#')
             self.assertEqual(count_schiffe, 5)
 
-    def test_esc_gedrueckt(self):
-        self.master.esc_gedrueckt(keyboard.Key.esc)
-        self.assertEqual(self.master.speichern_flag, True)
+    def test_print_menu_correct_input(self):
+        correct_input = "1"
+        with patch('sys.stdin', new=StringIO(correct_input)):
+            got_input:int = self.master.print_menu()
+            self.assertEqual(int(correct_input), got_input)
 
+
+    def test_print_countdown(self):
+        with patch('sys.stdout', new=StringIO()) as fake_out:
+            self.master.print_countdown(2)
+            count_anzeige:int = fake_out.getvalue().count("Anzeige")
+            count_geloescht:int = fake_out.getvalue().count("geloescht.")
+            count_2:int = fake_out.getvalue().count("2")
+            count_1:int = fake_out.getvalue().count("1")
+            self.assertEqual(count_anzeige, 2)
+            self.assertEqual(count_geloescht, 2)
+            self.assertEqual(count_2,1)
+            self.assertEqual(count_1,1)
+
+    def test_print_willkommensnachricht(self):
+        with patch('sys.stdout', new=StringIO()) as fake_out:
+            self.master.print_willkommensnachricht()
+            count_versenken:int = fake_out.getvalue().count("VERSENKEN")
+            count_horizontal:int = fake_out.getvalue().count("═")
+            count_vertical:int = fake_out.getvalue().count("║")
+            count_new_lines:int = fake_out.getvalue().count("\n")
+            self.assertEqual(count_versenken,1)    
+            self.assertEqual(count_horizontal,142)
+            self.assertEqual(count_vertical,16)  
+            self.assertEqual(count_new_lines,10) 
+
+    def test_get_user_input_richtung(self):
+        correct_input = "1"
+        expected_output = Richtung.OSTEN
+        with patch('sys.stdin', new=StringIO(correct_input)):
+            got_input:Richtung = self.master.get_user_input_richtung()
+            self.assertEqual(expected_output, got_input)
+
+    def test_get_user_input_name(self):
+        with patch('sys.stdin', new=StringIO("Test1")):
+            with patch('sys.stdout', new=StringIO()) as fake_out:
+                got_input:Richtung = self.master.get_user_input_name(1)
+                self.assertEqual(self.master.spieler_1.name, got_input)
+                self.assertEqual(fake_out.getvalue(), "Name von Spieler 1: ")
+
+    def test_fuehre_spielzug_aus(self):
+        getroffen:bool = self.master.fuehre_spielzug_aus(self.test_koordinate_treffer)
+        self.assertEqual(getroffen, True)
+        daneben:bool = self.master.fuehre_spielzug_aus(self.test_koordinate_daneben)
+        self.assertEqual(daneben, True)
+        ungueltig:bool = self.master.fuehre_spielzug_aus(self.test_ungueltige_koordinate)
+        self.assertEqual(ungueltig, False)
 
     def test_print_alles_fuer_spielzug(self):
         self.master.print_alles_fuer_spielzug()
 
+    @unittest.mock.patch('os.system')
+    def test_clear_terminal(self, os_system:os):
+        self.master.clear_terminal()
+        if platform.system() == "Windows":
+            os_system.assert_called_once_with('cls')
+        elif platform.system() == "Linux":
+             os_system.assert_called_once_with('clear')     
+       
     def test_spielen(self):
         #self.master.spielen()
         pass
@@ -113,24 +170,6 @@ class Test_Master(unittest.TestCase):
     def test_toggle_spielzug(self):
         self.master.toggle_spielzug()
         self.assertEqual(self.spieler_2, self.master.aktueller_spieler)
-
-    # def test_print_rahmen_oben(self):
-    #     expected_output = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n"
-    #     with patch('sys.stdout', new=StringIO()) as fake_out:
-    #         self.master.__print_rahmen_oben()
-    #         self.assertEqual(fake_out.getvalue(), expected_output)
-
-    # def test_print_rahmen_unten(self):
-    #     expected_output = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n"
-    #     with patch('sys.stdout', new=StringIO()) as fake_out:
-    #         self.master.__print_rahmen_unten()
-    #         self.assertEqual(fake_out.getvalue(), expected_output)
-
-    # def test_print_trennlinie(self):
-    #     expected_output = "┃━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┃\n"
-    #     with patch('sys.stdout', new=StringIO()) as fake_out:
-    #         self.master.__print_trennlinie()
-    #         self.assertEqual(fake_out.getvalue(), expected_output)
 
     def test_get_spieler_1(self):
         spieler = self.master.spieler_1
@@ -142,16 +181,10 @@ class Test_Master(unittest.TestCase):
         speichern_flag = master.speichern_flag
         self.assertEqual(speichern_flag, expected_speicher_flag)
 
-    def test_get_speichern_flag_nach_esc_gedrueckt(self):
-        expected_speicher_flag = True
-        master = Master()
-        master.esc_gedrueckt(keyboard.Key.esc)
-        speichern_flag = master.speichern_flag
-        self.assertEqual(speichern_flag, expected_speicher_flag)
-
     def test_get_spieler_2(self):
         spieler = self.master.spieler_2
         self.assertEqual(self.spieler_2, self.master.spieler_2)
+
 
 if __name__ == '__main__':
     unittest.main()

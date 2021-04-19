@@ -1,29 +1,30 @@
-"""[DocString]
 """
-#pylint: disable=c
+Masterdatei fuer das Spiel Schiffe versenken
+"""
 from typing import List
-import unittest
+import sys
+import os
+import platform
+import time
+import keyboard
 from schiff import Schiff
 from koordinate import Koordinate
 from spieler import Spieler
 from spielfeld import Spielfeld
 from helferklasse import Farben, Rahmenzeichen, Richtung, Status, Speicherverwaltung
-import keyboard
-import sys
-import os
-import platform
-import time
 
 
 class Master:
     """[summary]
     """
+
     def __init__(self):
         self.__speicherverwaltung = Speicherverwaltung()
-        self.__schiffe:list = [Schiff("Schlachtschiff",5),
-        Schiff("Kreuzer",4), Schiff("Kreuzer",4), 
-        Schiff("Zerstoerer",3), Schiff("Zerstoerer",3),Schiff("Zerstoerer",3),
-        Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2),Schiff("U-Boot",2)]
+        self.__ist_spiel_vorbei = False
+        self.__schiffe: list = [Schiff("Schlachtschiff", 5),
+                                Schiff("Kreuzer", 4), Schiff("Kreuzer", 4),
+                                Schiff("Zerstoerer", 3), Schiff("Zerstoerer", 3), Schiff("Zerstoerer", 3),
+                                Schiff("U-Boot", 2), Schiff("U-Boot", 2), Schiff("U-Boot", 2), Schiff("U-Boot", 2)]
         self.__speichern_flag = False
         self.__spieler = list()
 
@@ -66,17 +67,22 @@ class Master:
             Spieler: Spieler, der gerade dran ist.
         """
         return self.__aktueller_spieler
-    
+
     @aktueller_spieler.setter
-    def aktueller_spieler(self, aktueller_spieler:Spieler):
+    def aktueller_spieler(self, aktueller_spieler: Spieler):
         self.__aktueller_spieler = aktueller_spieler
 
     @property
     def aktueller_gegner(self) -> Spieler:
+        """Getter fuer aktueller_gegner
+
+        Returns:
+            Spieler: aktueller_gegner
+        """
         return self.__aktueller_gegner
-    
+
     @aktueller_gegner.setter
-    def aktueller_gegner(self, aktueller_gegner:Spieler):
+    def aktueller_gegner(self, aktueller_gegner: Spieler):
         """Setter für aktuellen Gegner
 
         Args:
@@ -136,10 +142,10 @@ class Master:
 
     def __get_zeilen_von_spielfeld(self, spielfeld: Spielfeld) -> list:
         neues_array: list = list()
-        for y in range(len(spielfeld.spielfeld)):
+        for row in range(len(spielfeld.spielfeld)):
             zeile: list = list()
-            for x in range(len(spielfeld.spielfeld[y])):
-                zeile.append(spielfeld.spielfeld[x][y])
+            for column in range(len(spielfeld.spielfeld[row])):
+                zeile.append(spielfeld.spielfeld[column][row])
             neues_array.append(zeile)
         return neues_array
 
@@ -158,13 +164,13 @@ class Master:
 
         for zeile in gedrehtes_spielfeld:
             if cnt_zeile == 10:
-                print("\t\t\t\t", end='')              
+                print("\t\t\t\t", end='')
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile}", end='')
-                
-            else:  
-                print("\t\t\t\t", end='')              
+
+            else:
+                print("\t\t\t\t", end='')
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile} ", end='')
-                
+
             self.__print_zeile(zeile)
             if cnt_zeile < 10:
                 self.__print_trennlinie()
@@ -172,14 +178,13 @@ class Master:
                 self.__print_rahmen_unten()
             cnt_zeile = cnt_zeile+1
 
-    
     def neues_spiel(self):
         """Für jeden Spieler den Namen einlesen, Schiffe platzieren
 
         Args:
             spieler_anzahl (int, optional): [description]. Defaults to 2.
-        """        
-        for anzahl in range(1,3):
+        """
+        for anzahl in range(1, 3):
             self.clear_terminal()
             name_spieler = self.get_user_input_name(anzahl)
             spielfeld_spieler = Spielfeld()
@@ -190,26 +195,26 @@ class Master:
                         self.clear_terminal()
                         self.print_spielfeld(spielfeld_spieler)
                         print(f"{name_spieler}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
-                        koordinate:Koordinate = self.get_user_input_koordinate()
-                        richtung:Richtung = self.get_user_input_richtung()                   
-                        spielfeld_spieler = self.platziere_schiff(name_spieler, spielfeld_spieler, schiff, koordinate, richtung)
+                        koordinate: Koordinate = self.get_user_input_koordinate()
+                        richtung: Richtung = self.get_user_input_richtung()
+                        koordinate.richtung = richtung
+                        spielfeld_spieler = self.platziere_schiff(name_spieler, spielfeld_spieler, schiff, koordinate)
                         ist_platziert = True
                     except IndexError:
                         print("Das Schiff kann so nicht platziert werden. Leertaste fuer weiter.")
-                        keyboard.wait(hotkey='space') #enter=28  space=57                    
+                        keyboard.wait(hotkey='space')  # enter=28  space=57
                         ist_platziert = False
                     except ValueError:
                         print("Ungueltige Eingabe. Leertaste fuer weiter.")
-                        keyboard.wait(hotkey=57) #enter=28  space=57 
+                        keyboard.wait(hotkey=57)  # enter=28  space=57
             self.__spieler.append(Spieler(name_spieler, spielfeld_spieler, Spielfeld(), 0))
 
         self.spieler_1 = self.__spieler[0]
         self.spieler_2 = self.__spieler[1]
         self.clear_terminal()
 
-
     def toggle_spielzug(self):
-        temp:Spieler = self.aktueller_spieler
+        temp: Spieler = self.aktueller_spieler
         self.aktueller_spieler = self.aktueller_gegner
         self.aktueller_gegner = temp
 
@@ -223,10 +228,9 @@ class Master:
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
 
-
-    def schiessen(self, spieler: Spieler, gegner: Spieler, koordinate:Koordinate) -> Status:
-        try:     
-            schuss_ergebnis:Status = spieler.wird_abgeschossen(koordinate)
+    def schiessen(self, spieler: Spieler, gegner: Spieler, koordinate: Koordinate) -> Status:
+        try:
+            schuss_ergebnis: Status = spieler.wird_abgeschossen(koordinate)
             if schuss_ergebnis == Status.TREFFER:
                 spieler.update_spielfeld_gegner(koordinate, Status.TREFFER)
                 gegner.update_spielfeld(koordinate, Status.TREFFER)
@@ -237,22 +241,22 @@ class Master:
         except IndexError:
             return Status.UNGUELTIG
 
-    def get_user_input_koordinate(self)->Koordinate:
-        koordinate = input("Gebe eine Koordinate ein: ")
-        koordinate_list = koordinate.strip().split()
+    def get_user_input_koordinate(self) -> Koordinate:
+        koordinate = input("Gebe eine Koordinate ein: ").strip()
+        koordinate_list = koordinate.split()
         buchstabe = koordinate[0]
         zahl = int(koordinate[1:])
         return Koordinate(buchstabe, zahl)
 
-    def get_user_input_richtung(self) ->Richtung :
+    def get_user_input_richtung(self) -> Richtung:
         return Richtung(int(input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n").strip()))
 
-    def get_user_input_name(self, spieler_nummer:int) -> str:
+    def get_user_input_name(self, spieler_nummer: int) -> str:
         return input(f"Name von Spieler {spieler_nummer}: ")
 
-    def platziere_schiff(self, name:str, spielfeld:Spielfeld, schiff:Schiff, koordinate:Koordinate, richtung:Richtung)->Spielfeld:
-        self.print_spielfeld(spielfeld)        
-        spielfeld.plaziere_schiff(koordinate, richtung, schiff)
+    def platziere_schiff(self, name: str, spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate) -> Spielfeld:
+        self.print_spielfeld(spielfeld)
+        spielfeld.plaziere_schiff(koordinate, schiff)
         return spielfeld
 
     def print_willkommensnachricht(self):
@@ -286,15 +290,15 @@ class Master:
         Gibt Menu aus: 1 - Neues Spiel
                        2 - Spiel laden
         """
-        print("Menu:")
-        auswahl = input("1 - Neues Spiel\n2 - Spiel laden\n")
         ist_gueltig = False
+        print("Menu:")
         while not ist_gueltig:
-            if isinstance(int(auswahl), int):
-                return int(auswahl)
-            else:
+            auswahl = input("1 - Neues Spiel\n2 - Spiel laden\n")
+            try:
+                if isinstance(int(auswahl), int):
+                    return int(auswahl)
+            except ValueError:
                 ist_gueltig = False
-
 
     def print_alles_fuer_spielzug(self):
         print(f"{self.aktueller_spieler.name} du bist dran.\n")
@@ -303,7 +307,7 @@ class Master:
         print("\nEigenes Spielfeld:")
         self.print_spielfeld(self.aktueller_spieler.spielfeld)
         print(f"{self.aktueller_spieler.name}, wo willst du hinschiessen?")
-        
+
     def clear_terminal(self):
         """
         Löscht Inhalt der Shell
@@ -312,14 +316,9 @@ class Master:
             os.system('cls')
         if platform.system() == "Linux":
             os.system('clear')
-        
+
     def spielen(self):
-        """
-        Hauptfunktion
-        Args:
-            _argv ([type]): [description]
-        """      
-        self.print_willkommensnachricht()                
+        self.print_willkommensnachricht()
         time.sleep(3)
         self.clear_terminal()
 
@@ -330,37 +329,37 @@ class Master:
             self.aktueller_gegner = self.spieler_2
         elif auswahl == 2:
             pass
-        
-            
-        spiel_vorbei:bool = False
 
-        while not spiel_vorbei:
-            
+        while not self.__spiel_vorbei:
             self.clear_terminal()
             self.print_alles_fuer_spielzug()
-            koordinate:Koordinate = self.get_user_input_koordinate()
-            gueltiger_schuss:bool = False
+            koordinate: Koordinate = self.get_user_input_koordinate()
+            gueltiger_schuss: bool = False
             while not gueltiger_schuss:
-                schuss_ergebnis:Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
-                if schuss_ergebnis == Status.TREFFER:
-                    print("Treffer!")
-                    gueltiger_schuss = True
-                elif schuss_ergebnis == Status.DANEBEN:
-                    print("Daneben!")
-                    gueltiger_schuss = True
-                elif schuss_ergebnis == Status.UNGUELTIG:
-                    print("Ungueltige Koordinate!")
-
-            spiel_vorbei = self.aktueller_gegner.is_tot()
+                gueltiger_schuss = self.fuehre_spielzug_aus(koordinate)
+            self.__spiel_vorbei = self.__aktueller_gegner.is_tot()
             self.print_countdown(5)
             self.toggle_spielzug()
             if self.__speichern_flag:
-              self.__speicherverwaltung.speichern()  
+                self.__speicherverwaltung.speichern()
+
+    def fuehre_spielzug_aus(self, koordinate: Koordinate) -> bool:
+        schuss_ergebnis: Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
+        if schuss_ergebnis == Status.TREFFER:
+            print("Treffer!")
+            return True
+        elif schuss_ergebnis == Status.DANEBEN:
+            print("Daneben!")
+            return True
+        elif schuss_ergebnis == Status.UNGUELTIG:
+            print("Ungueltige Koordinate!")
+            return False
 
 
 def main(_argv):
     master: Master = Master()
     master.spielen()
+
 
 if __name__ == '__main__':
     main(sys.argv)

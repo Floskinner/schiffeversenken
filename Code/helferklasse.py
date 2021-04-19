@@ -31,10 +31,10 @@ class Rahmenzeichen(Enum):
 
 class Speicherverwaltung():
 
-    def speichern(self, pfad:str=f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json", daten:dict):
+    def speichern(self, pfad:str=f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json"):
         print(pfad)
 
     def laden(self, pfad:str)->dict:
-
+        pass
 
 #TODO Speichern und Lesen erstellen
