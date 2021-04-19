@@ -12,11 +12,12 @@ class Spielfeld():
     """Klasse womit ein Spielfeld für 1 Person erstellt und verwaltet werden kann
     """
 
-    def __init__(self, **kwargs: Union[int, list[list[int]]]):
+    def __init__(self, **kwargs: Union[int, list[list[int]], list[list[Status]]]):
         """Erstelle Spielfeld
         kwargs (dict):
             dimension (int) = 10: Veraendert die groesse vom Spielfeld
             spielfeld list[list[int]]]: Fertiges Spielfeld zuordnen
+            spielfeld list[list[Status]]: Fertiges Spielfeld zuordnen
         """
 
         dimension: Optional[int] = None

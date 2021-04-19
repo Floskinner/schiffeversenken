@@ -28,6 +28,9 @@ class Master:
         self.__speichern_flag = False
         self.__spieler = list()
 
+        keyboard.add_hotkey('ctrl+s', self.__setzte_speichern_flag, args=(), suppress=True, timeout=1, trigger_on_release=False)
+
+
     @property
     def speichern_flag(self) -> bool:
         """
@@ -410,14 +413,14 @@ class Master:
 
         # Spielfeder fuer aktueller Spieler
         daten[self.__aktueller_spieler.name] = {
-            "spielfeld": self.__aktueller_spieler.spielfeld,
-            "spielfeld_gegner": self.__aktueller_spieler.spielfeld_gegner
+            "spielfeld": self.__aktueller_spieler.spielfeld.spielfeld,
+            "spielfeld_gegner": self.__aktueller_spieler.spielfeld_gegner.spielfeld
         }
 
         # Spielfeder fuer aktueller gegner Spieler
         daten[self.__aktueller_gegner.name] = {
-            "spielfeld": self.__aktueller_gegner.spielfeld,
-            "spielfeld_gegner": self.__aktueller_gegner.spielfeld_gegner
+            "spielfeld": self.__aktueller_gegner.spielfeld.spielfeld,
+            "spielfeld_gegner": self.__aktueller_gegner.spielfeld_gegner.spielfeld
         }
 
         return daten
@@ -433,9 +436,8 @@ class Master:
         else:
             self.__speicherverwaltung.speichern(daten, pfad)
 
-    def __lade_spielstand(self):
+    def __lade_spielstand(self, pfad: str):
         try:
-            pfad: str = input("Pfad zum Spielstand: ")
             daten: dict = self.__speicherverwaltung.laden(pfad)
 
             aktueller_spieler_master = daten["master"]["aktueller_spieler"]
@@ -443,13 +445,13 @@ class Master:
 
             aktueller_spieler_name = aktueller_spieler_master["name"]
             aktueller_spieler_punkte = aktueller_spieler_master["punkte"]
-            aktueller_spieler_spielfeld = daten[aktueller_spieler_name]["spielfeld"]
-            aktueller_spieler_spielfeld_gegner = daten[aktueller_spieler_name]["spielfeld_gegner"]
+            aktueller_spieler_spielfeld = Spielfeld(spielfeld=daten[aktueller_spieler_name]["spielfeld"])
+            aktueller_spieler_spielfeld_gegner = Spielfeld(spielfeld=daten[aktueller_spieler_name]["spielfeld_gegner"])
 
             aktueller_spieler_gegner_name = aktueller_spieler_gegner_master["name"]
             aktueller_spieler_gegner_punkte = aktueller_spieler_gegner_master["punkte"]
-            aktueller_spieler_gegner_spielfeld = daten[aktueller_spieler_gegner_name]["spielfeld"]
-            aktueller_spieler_gegner_spielfeld_gegner = daten[aktueller_spieler_gegner_name]["spielfeld_gegner"]
+            aktueller_spieler_gegner_spielfeld = Spielfeld(spielfeld=daten[aktueller_spieler_gegner_name]["spielfeld"])
+            aktueller_spieler_gegner_spielfeld_gegner = Spielfeld(spielfeld=daten[aktueller_spieler_gegner_name]["spielfeld_gegner"])
 
             self.__aktueller_spieler = Spieler(aktueller_spieler_name, aktueller_spieler_spielfeld, aktueller_spieler_spielfeld, aktueller_spieler_punkte)
             self.__aktueller_gegner = Spieler(aktueller_spieler_gegner_name, aktueller_spieler_gegner_spielfeld,
@@ -462,6 +464,9 @@ class Master:
             print("Fehler beim Laden der Daten! Bitte neu versuchen")
             exit(self, 1)
 
+    def __setzte_speichern_flag(self, zusandt: bool = True):
+        self.__speichern_flag = zusandt
+
     def spielen(self):
         self.print_willkommensnachricht()
         time.sleep(3)
@@ -473,7 +478,10 @@ class Master:
             self.aktueller_spieler = self.spieler_1
             self.aktueller_gegner = self.spieler_2
         elif auswahl == 2:
-            self.__lade_spielstand()
+            pfad: str = input("Pfad zum Spielstand: ").strip()
+            self.__lade_spielstand(pfad)
+
+        spiel_vorbei: bool = False
 
         while not self.__ist_spiel_vorbei:
             self.clear_terminal()
@@ -485,8 +493,9 @@ class Master:
             self.__ist_spiel_vorbei = self.__aktueller_gegner.is_tot()
             self.print_countdown(5)
             self.toggle_spielzug()
-            if True:
+            if self.__speichern_flag:
                 self.__speicher_spielstand()
+                self.__setzte_speichern_flag(False)
 
         if self.__ist_spiel_vorbei:
             self.print_spielende()

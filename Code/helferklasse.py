@@ -1,11 +1,11 @@
 import datetime
 import json
-from enum import Enum, unique
+from enum import IntEnum, Enum, unique
 from datetime import datetime
 
 
 @unique
-class Status(Enum):
+class Status(IntEnum):
     DANEBEN = -1
     WASSER = 0
     TREFFER = 1
@@ -39,7 +39,7 @@ class Speicherverwaltung():
             json.dump(daten, outfile)
 
     def laden(self, pfad: str) -> dict:
-        with open('pfad') as json_file:
+        with open(pfad) as json_file:
             daten = json.load(json_file)
 
         return daten
