@@ -1,4 +1,5 @@
 import datetime
+import json
 from enum import Enum, unique
 from datetime import datetime
 
@@ -10,6 +11,7 @@ class Status(Enum):
     TREFFER = 1
     SCHIFF = 2
     UNGUELTIG = 3
+
 
 @unique
 class Farben(Enum):
@@ -27,14 +29,17 @@ class Richtung(Enum):
 
 class Rahmenzeichen(Enum):
     HEAVY_VERTICAL = "\u2503"
-    #TODO Weitere Zeichen einfuegen
+    # TODO Weitere Zeichen einfuegen
+
 
 class Speicherverwaltung():
 
-    def speichern(self, pfad:str=f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json"):
-        print(pfad)
+    def speichern(self, daten: dict, pfad: str = f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json"):
+        with open(pfad, 'w') as outfile:
+            json.dump(daten, outfile)
 
-    def laden(self, pfad:str)->dict:
-        pass
+    def laden(self, pfad: str) -> dict:
+        with open('pfad') as json_file:
+            daten = json.load(json_file)
 
-#TODO Speichern und Lesen erstellen
+        return daten

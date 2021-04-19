@@ -316,6 +316,81 @@ class Master:
             os.system('cls')
         if platform.system() == "Linux":
             os.system('clear')
+        
+    def __speicher_spielstand_daten(self) -> dict:
+        """Sammelt die benoetigten Daten der Aktuellen Spieler und gibt diese zurueck
+
+        Returns:
+            dict: fertiges dict zum speichern
+        """
+        daten: dict = {}
+
+        #Allgemeine Daten wie Name und Punkte
+        daten["master"] = {
+            "aktueller_spieler": {
+                "name": self.__aktueller_spieler.name,
+                "punkte": self.__aktueller_spieler.punkte
+            },
+            "aktueller_gegner": {
+                "name": self.__aktueller_gegner.name,
+                "punkte": self.__aktueller_gegner.punkte
+            }
+        }
+
+        #Spielfeder fuer aktueller Spieler
+        daten[self.__aktueller_spieler.name] = {
+            "spielfeld": self.__aktueller_spieler.spielfeld,
+            "spielfeld_gegner": self.__aktueller_spieler.spielfeld_gegner
+        }
+
+        #Spielfeder fuer aktueller gegner Spieler
+        daten[self.__aktueller_gegner.name] = {
+            "spielfeld": self.__aktueller_gegner.spielfeld,
+            "spielfeld_gegner": self.__aktueller_gegner.spielfeld_gegner
+        }
+
+        return daten
+
+    
+    def __speicher_spielstand(self):
+        """Fragt den User nach einem Pfad und speichert diesen am angegeben Ort. Wenn String leer, dann aktueller Pfad
+        """
+
+        pfad = input("Speicherpfad vom Spielstand (Leer - aktueller Pfad): ")
+        daten = self.__speicher_spielstand_daten()
+        if pfad.strip() == "":
+            self.__speicherverwaltung.speichern(daten)
+        else:
+            self.__speicherverwaltung.speichern(daten, pfad)
+
+    def __lade_spielstand(self):
+        try:
+            pfad: str = input("Pfad zum Spielstand: ")
+            daten: dict = self.__speicherverwaltung.laden(pfad)
+
+            aktueller_spieler_master = daten["master"]["aktueller_spieler"]
+            aktueller_spieler_gegner_master = daten["master"]["aktueller_gegner"]
+
+            aktueller_spieler_name = aktueller_spieler_master["name"]
+            aktueller_spieler_punkte = aktueller_spieler_master["punkte"]
+            aktueller_spieler_spielfeld = daten[aktueller_spieler_name]["spielfeld"]
+            aktueller_spieler_spielfeld_gegner = daten[aktueller_spieler_name]["spielfeld_gegner"]
+
+            aktueller_spieler_gegner_name = aktueller_spieler_gegner_master["name"]
+            aktueller_spieler_gegner_punkte = aktueller_spieler_gegner_master["punkte"]
+            aktueller_spieler_gegner_spielfeld = daten[aktueller_spieler_gegner_name]["spielfeld"]
+            aktueller_spieler_gegner_spielfeld_gegner = daten[aktueller_spieler_gegner_name]["spielfeld_gegner"]
+
+            self.__aktueller_spieler = Spieler(aktueller_spieler_name, aktueller_spieler_spielfeld, aktueller_spieler_spielfeld, aktueller_spieler_punkte)
+            self.__aktueller_gegner = Spieler(aktueller_spieler_gegner_name, aktueller_spieler_gegner_spielfeld, aktueller_spieler_gegner_spielfeld, aktueller_spieler_gegner_punkte)
+
+        except KeyError:
+            print("Gespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
+            exit(self, 1)
+        except:
+            print("Fehler beim Laden der Daten! Bitte neu versuchen")
+            exit(self, 1)
+
 
     def spielen(self):
         self.print_willkommensnachricht()
@@ -328,7 +403,10 @@ class Master:
             self.aktueller_spieler = self.spieler_1
             self.aktueller_gegner = self.spieler_2
         elif auswahl == 2:
-            pass
+            self.__lade_spielstand()
+        
+            
+        spiel_vorbei:bool = False
 
         while not self.__spiel_vorbei:
             self.clear_terminal()
@@ -340,20 +418,8 @@ class Master:
             self.__spiel_vorbei = self.__aktueller_gegner.is_tot()
             self.print_countdown(5)
             self.toggle_spielzug()
-            if self.__speichern_flag:
-                self.__speicherverwaltung.speichern()
-
-    def fuehre_spielzug_aus(self, koordinate: Koordinate) -> bool:
-        schuss_ergebnis: Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
-        if schuss_ergebnis == Status.TREFFER:
-            print("Treffer!")
-            return True
-        elif schuss_ergebnis == Status.DANEBEN:
-            print("Daneben!")
-            return True
-        elif schuss_ergebnis == Status.UNGUELTIG:
-            print("Ungueltige Koordinate!")
-            return False
+            if True:
+              self.__speicher_spielstand()  
 
 
 def main(_argv):
