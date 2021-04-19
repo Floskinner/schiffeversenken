@@ -30,7 +30,6 @@ class Master:
 
         keyboard.add_hotkey('ctrl+s', self.__setzte_speichern_flag, args=(), suppress=True, timeout=1, trigger_on_release=False)
 
-
     @property
     def speichern_flag(self) -> bool:
         """
@@ -209,16 +208,14 @@ class Master:
                     try:
                         self.clear_terminal()
                         self.print_spielfeld(spielfeld_spieler)
-                        print(
-                            f"{name_spieler}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
+                        print(f"{name_spieler}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
                         koordinate: Koordinate = self.get_user_input_koordinate()
                         richtung: Richtung = self.get_user_input_richtung()
                         koordinate.richtung = richtung
                         spielfeld_spieler = self.platziere_schiff(spielfeld_spieler, schiff, koordinate)
                         ist_platziert = True
                     except IndexError:
-                        print(
-                            "Das Schiff kann so nicht platziert werden. Leertaste fuer weiter.")
+                        print("Das Schiff kann so nicht platziert werden. Leertaste fuer weiter.")
                         keyboard.wait(hotkey='space')  # enter=28  space=57
                         ist_platziert = False
                     except ValueError:
@@ -340,13 +337,10 @@ class Master:
         print()
         print("\u2551\t  _____              _          _      ___   ___\t\t\u2551")
         print("\u2551\t / ____|            | |        |_|    / __| / __|   ___\\ \t\u2551")
-        print(
-            "\u2551\t| (___       ____   | |___      _    | |__  | |__  / __ \\\t\u2551")
-        print(
-            "\u2551\t\\___  \\    /  __|   |     \\    | |   |  __| | ___|| |__|_|\t\u2551")
+        print("\u2551\t| (___       ____   | |___      _    | |__  | |__  / __ \\\t\u2551")
+        print("\u2551\t\\___  \\    /  __|   |     \\    | |   |  __| | ___|| |__|_|\t\u2551")
         print("\u2551\t ____) |  |  (___   |  __  |   | |   | |    | |   | |_____\t\u2551")
-        print(
-            "\u2551\t|_____/    \\____|   |_|  |_|   |_|   |_|    |_|   \\______|\t\u2551")
+        print("\u2551\t|_____/    \\____|   |_|  |_|   |_|   |_|    |_|   \\______|\t\u2551")
         print("\u2551\t\t\t\t\t\t\t\t\t\u2551")
         print("\u2551\t\t\t\tVERSENKEN\t\t\t\t\u2551")
         print("\u255A", end='')
@@ -453,16 +447,17 @@ class Master:
             aktueller_spieler_gegner_spielfeld = Spielfeld(spielfeld=daten[aktueller_spieler_gegner_name]["spielfeld"])
             aktueller_spieler_gegner_spielfeld_gegner = Spielfeld(spielfeld=daten[aktueller_spieler_gegner_name]["spielfeld_gegner"])
 
-            self.__aktueller_spieler = Spieler(aktueller_spieler_name, aktueller_spieler_spielfeld, aktueller_spieler_spielfeld, aktueller_spieler_punkte)
+            self.__aktueller_spieler = Spieler(aktueller_spieler_name, aktueller_spieler_spielfeld,
+                                               aktueller_spieler_spielfeld_gegner, aktueller_spieler_punkte)
             self.__aktueller_gegner = Spieler(aktueller_spieler_gegner_name, aktueller_spieler_gegner_spielfeld,
-                                              aktueller_spieler_gegner_spielfeld, aktueller_spieler_gegner_punkte)
+                                              aktueller_spieler_gegner_spielfeld_gegner, aktueller_spieler_gegner_punkte)
 
         except KeyError:
             print("Gespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
-            exit(self, 1)
-        except:
+            sys.exit(self, 1)
+        except IOError:
             print("Fehler beim Laden der Daten! Bitte neu versuchen")
-            exit(self, 1)
+            sys.exit(self, 1)
 
     def __setzte_speichern_flag(self, zusandt: bool = True):
         self.__speichern_flag = zusandt
@@ -480,8 +475,6 @@ class Master:
         elif auswahl == 2:
             pfad: str = input("Pfad zum Spielstand: ").strip()
             self.__lade_spielstand(pfad)
-
-        spiel_vorbei: bool = False
 
         while not self.__ist_spiel_vorbei:
             self.clear_terminal()
@@ -519,6 +512,15 @@ class Master:
         print("Ungueltige Koordinate!")
         return False
 
+    def initialisieren(self, auswahl:int):
+        if auswahl == 1:
+            self.neues_spiel()
+            self.aktueller_spieler = self.spieler_1
+            self.aktueller_gegner = self.spieler_2
+        elif auswahl == 2:
+            pfad: str = input("Pfad zum Spielstand: ").strip()
+            self.__lade_spielstand(pfad)
+
 
 def main(_argv):
     """Main, die das Modul schiffeversenken ausfuehrt.
@@ -527,6 +529,8 @@ def main(_argv):
         _argv ([type]):
     """
     master: Master = Master()
+    auswahl:int = master.print_menu()
+    master.initialisieren(auswahl)
     master.spielen()
 
 

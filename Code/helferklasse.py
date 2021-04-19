@@ -2,6 +2,7 @@ import datetime
 import json
 from enum import IntEnum, Enum, unique
 from datetime import datetime
+from typing import Union
 
 
 @unique
@@ -30,6 +31,19 @@ class Richtung(Enum):
 class Rahmenzeichen(Enum):
     HEAVY_VERTICAL = "\u2503"
     # TODO Weitere Zeichen einfuegen
+
+
+def user_input(text:str, datentyp:Union[str,int], erlaubte_werte:Union[list[str], list[int]]) -> Union[str,int]:    
+    ist_valide = False
+    while not ist_valide:
+        try:
+            data = input(text)
+            
+            if isinstance(datentyp,int):
+                data_int = int(data)
+        except ValueError:
+            print("Ungueltige Eingabe.")
+
 
 
 class Speicherverwaltung():
