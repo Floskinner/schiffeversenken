@@ -105,9 +105,8 @@ class Spielfeld():
         """
         for x_felder in self.__spielfeld:
             for feld in x_felder:
-                if feld != Status.WASSER:
+                if feld == Status.SCHIFF:
                     return False
-
         return True
 
     def reset(self):

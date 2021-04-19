@@ -37,6 +37,13 @@ class Master:
         return self.__speichern_flag
 
     @property
+    def ist_spiel_vorbei(self) -> bool:
+        """
+        Getter für ist_spiel_vorbei
+        """
+        return self.__ist_spiel_vorbei
+
+    @property
     def spieler_1(self) -> Spieler:
         """
         Getter für Spieler_1
@@ -104,8 +111,7 @@ class Master:
             if feld == Status.WASSER:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}   ", end='')
             elif feld == Status.SCHIFF:
-                print(
-                    f"{Rahmenzeichen.HEAVY_VERTICAL.value} {Farben.GRUEN.value}#{Farben.FARB_ENDE.value} ", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {Farben.GRUEN.value}#{Farben.FARB_ENDE.value} ", end='')
             elif feld == Status.TREFFER:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} X ", end='')
             elif feld == Status.DANEBEN:
@@ -249,7 +255,7 @@ class Master:
     def print_spielende(self):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
-        print(f"{self.__aktueller_spieler} hat gewonnen! Glueckwunsch!")
+        print(f"{self.__aktueller_spieler.name} hat gewonnen! Glueckwunsch!")
 
     @staticmethod
     def schiessen(spieler: Spieler, gegner: Spieler, koordinate: Koordinate) -> Status:
@@ -281,7 +287,7 @@ class Master:
         Returns:
             Koordinate: koordinate
         """
-        koordinate = input("Gebe eine Koordinate ein: ").strip()
+        koordinate = user_input("Gebe eine Koordinate ein: ",str)
         buchstabe = koordinate[0]
         zahl = int(koordinate[1:])
         return Koordinate(buchstabe, zahl)
@@ -459,32 +465,19 @@ class Master:
         self.__speichern_flag = zusandt
 
     def spielen(self):
-        self.print_willkommensnachricht()
-        time.sleep(3)
         self.clear_terminal()
+        self.__print_alles_fuer_spielzug()
+        koordinate: Koordinate = self.get_user_input_koordinate()
+        gueltiger_schuss: bool = False
 
-        auswahl: int = self.print_menu()
-        if auswahl == 1:
-            self.neues_spiel()
-            self.aktueller_spieler = self.spieler_1
-            self.aktueller_gegner = self.spieler_2
-        elif auswahl == 2:
-            pfad: str = input("Pfad zum Spielstand: ").strip()
-            self.__lade_spielstand(pfad)
-
-        while not self.__ist_spiel_vorbei:
-            self.clear_terminal()
-            self.__print_alles_fuer_spielzug()
-            koordinate: Koordinate = self.get_user_input_koordinate()
-            gueltiger_schuss: bool = False
-            while not gueltiger_schuss:
-                gueltiger_schuss = self.fuehre_spielzug_aus(koordinate)
-            self.__ist_spiel_vorbei = self.__aktueller_gegner.is_tot()
-            self.print_countdown(5)
-            self.toggle_spielzug()
-            if self.__speichern_flag:
-                self.__speicher_spielstand()
-                self.__setzte_speichern_flag(False)
+        while not gueltiger_schuss:
+            gueltiger_schuss = self.fuehre_spielzug_aus(koordinate)
+            
+        self.print_countdown(5)
+        self.toggle_spielzug()
+        if self.__speichern_flag:
+            self.__speicher_spielstand()
+            self.__setzte_speichern_flag(False)
 
         if self.__ist_spiel_vorbei:
             self.print_spielende()
@@ -501,6 +494,7 @@ class Master:
         schuss_ergebnis: Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
         if schuss_ergebnis == Status.TREFFER:
             print("Treffer!")
+            self.__ist_spiel_vorbei = self.aktueller_gegner.is_tot()
             return True
         if schuss_ergebnis == Status.DANEBEN:
             print("Daneben!")
@@ -508,7 +502,7 @@ class Master:
         print("Ungueltige Koordinate!")
         return False
 
-    def initialisieren(self, auswahl:int):
+    def initialisieren(self, auswahl: int):
         if auswahl == 1:
             self.neues_spiel()
             self.aktueller_spieler = self.spieler_1
@@ -525,9 +519,13 @@ def main(_argv):
         _argv ([type]):
     """
     master: Master = Master()
-    auswahl:int = master.print_menu()
+    master.print_willkommensnachricht()
+    time.sleep(3)
+    master.clear_terminal()
+    auswahl: int = master.print_menu()
     master.initialisieren(auswahl)
-    master.spielen()
+    while not master.ist_spiel_vorbei:
+        master.spielen()
 
 
 if __name__ == '__main__':

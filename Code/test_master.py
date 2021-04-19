@@ -29,7 +29,19 @@ class Test_Master(unittest.TestCase):
                                      [Status.DANEBEN, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
                                      [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.SCHIFF, Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER]]
 
+        self.befuelltes_spielfeld_letzter_schuss_list = [[Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
+                                     [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER]]                             
+
         self.befuelltes_spielfeld = Spielfeld(spielfeld=self.befuelltes_spielfeld_list)
+        self.befuelltes_spielfeld_letzter_schuss = Spielfeld(spielfeld = self.befuelltes_spielfeld_letzter_schuss_list)
         self.spieler_1 = Spieler("Test1", self.befuelltes_spielfeld, Spielfeld(),0)
         self.master.aktueller_spieler = self.spieler_1
         self.master.spieler_1 = self.spieler_1      
@@ -41,6 +53,9 @@ class Test_Master(unittest.TestCase):
         self.test_koordinate_treffer = Koordinate('A',1)
         self.test_koordinate_daneben = Koordinate('E',1)
         return super().setUp()
+
+    def test_print_spielfeld_letzter_schuss(self):
+        self.master.print_spielfeld(self.befuelltes_spielfeld_letzter_schuss)
 
     def test_print_spielfeld(self):
         with patch('sys.stdout', new=StringIO()) as fake_out:
@@ -152,9 +167,6 @@ class Test_Master(unittest.TestCase):
         ungueltig:bool = self.master.fuehre_spielzug_aus(self.test_ungueltige_koordinate)
         self.assertEqual(ungueltig, False)
 
-    # def test_print_alles_fuer_spielzug(self):
-    #     self.master.print_alles_fuer_spielzug()
-
     @unittest.mock.patch('os.system')
     def test_clear_terminal(self, os_system:os):
         self.master.clear_terminal()
@@ -163,9 +175,22 @@ class Test_Master(unittest.TestCase):
         elif platform.system() == "Linux":
              os_system.assert_called_once_with('clear')     
        
-    def test_spielen(self):
-        #self.master.spielen()
-        pass
+    def test_spielen_gueltige_koordinate(self):
+        with patch('sys.stdin', new=StringIO("A1")):
+            self.master.spielen()
+            self.assertEqual(self.master.aktueller_spieler, self.spieler_2)
+
+    def test_spielen_letzter_schuss(self):
+        master = Master()
+        spieler_1 = self.spieler_1
+        master.aktueller_spieler = spieler_1
+        spieler_2 = Spieler("Test2", self.befuelltes_spielfeld_letzter_schuss, Spielfeld(), 0)
+        master.aktueller_gegner = spieler_2
+        master.print_spielfeld(spieler_1.spielfeld)
+
+        with patch('sys.stdin', new=StringIO("A1")):
+            master.spielen()
+            self.assertEqual(master.ist_spiel_vorbei, True)
 
     def test_toggle_spielzug(self):
         self.master.toggle_spielzug()
