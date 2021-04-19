@@ -8,7 +8,7 @@ from koordinate import Koordinate
 from spieler import Spieler
 from spielfeld import Spielfeld
 from helferklasse import Farben, Rahmenzeichen, Richtung, Status, Speicherverwaltung
-from pynput import keyboard
+import keyboard
 import sys
 import os
 import platform
@@ -20,7 +20,6 @@ class Master:
     """
     def __init__(self):
         self.__speicherverwaltung = Speicherverwaltung()
-        self.__listener:keyboard.Listener = keyboard.Listener(on_press=self.esc_gedrueckt)
         self.__schiffe:list = [Schiff("Schlachtschiff",5),
         Schiff("Kreuzer",4), Schiff("Kreuzer",4), 
         Schiff("Zerstoerer",3), Schiff("Zerstoerer",3),Schiff("Zerstoerer",3),
@@ -174,14 +173,14 @@ class Master:
             cnt_zeile = cnt_zeile+1
 
     
-    def neues_spiel(self, spieler_anzahl:int=2):
+    def neues_spiel(self):
         """Für jeden Spieler den Namen einlesen, Schiffe platzieren
 
         Args:
             spieler_anzahl (int, optional): [description]. Defaults to 2.
-        """
-        self.clear_terminal()
-        for anzahl in range(1,spieler_anzahl+1):
+        """        
+        for anzahl in range(1,2):
+            self.clear_terminal()
             name_spieler = self.get_user_input_name(anzahl)
             spielfeld_spieler = Spielfeld()
             for schiff in self.__schiffe:
@@ -196,7 +195,8 @@ class Master:
                         spielfeld_spieler = self.platziere_schiff(name_spieler, spielfeld_spieler, schiff, koordinate, richtung)
                         ist_platziert = True
                     except IndexError:
-                        print("Das Schiff kann so nicht platziert werden.")
+                        print("Das Schiff kann so nicht platziert werden. Leertaste fuer weiter.")
+                        keyboard.wait(hotkey=57) #enter=28  space=57                    
                         ist_platziert = False
                     except ValueError:
                         print("Ungueltige Eingabe.")
@@ -238,13 +238,13 @@ class Master:
 
     def get_user_input_koordinate(self)->Koordinate:
         koordinate = input("Gebe eine Koordinate ein: ")
-        koordinate_list = koordinate.split()
+        koordinate_list = koordinate.strip.split()
         buchstabe = koordinate[0]
         zahl = int(koordinate[1:])
         return Koordinate(buchstabe, zahl)
 
     def get_user_input_richtung(self) ->Richtung :
-        return Richtung(int(input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n")))
+        return Richtung(int(input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n").strip()))
 
     def get_user_input_name(self, spieler_nummer:int) -> str:
         return input(f"Name von Spieler {spieler_nummer}: ")
@@ -311,12 +311,7 @@ class Master:
             os.system('cls')
         if platform.system() == "Linux":
             os.system('clear')
-
-    def esc_gedrueckt(self, taste:keyboard.Key):
-        if taste == keyboard.Key.esc:
-            self.__speichern_flag = True
-
-         
+        
     def spielen(self):
         """
         Hauptfunktion
@@ -337,8 +332,7 @@ class Master:
         
             
         spiel_vorbei:bool = False
-        
-        self.__listener.start()
+
         while not spiel_vorbei:
             
             self.clear_terminal()
