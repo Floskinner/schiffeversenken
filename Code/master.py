@@ -179,7 +179,7 @@ class Master:
         Args:
             spieler_anzahl (int, optional): [description]. Defaults to 2.
         """        
-        for anzahl in range(1,2):
+        for anzahl in range(1,3):
             self.clear_terminal()
             name_spieler = self.get_user_input_name(anzahl)
             spielfeld_spieler = Spielfeld()
@@ -196,10 +196,11 @@ class Master:
                         ist_platziert = True
                     except IndexError:
                         print("Das Schiff kann so nicht platziert werden. Leertaste fuer weiter.")
-                        keyboard.wait(hotkey=57) #enter=28  space=57                    
+                        keyboard.wait(hotkey='space') #enter=28  space=57                    
                         ist_platziert = False
                     except ValueError:
-                        print("Ungueltige Eingabe.")
+                        print("Ungueltige Eingabe. Leertaste fuer weiter.")
+                        keyboard.wait(hotkey=57) #enter=28  space=57 
             self.__spieler.append(Spieler(name_spieler, spielfeld_spieler, Spielfeld(), 0))
 
         self.spieler_1 = self.__spieler[0]
@@ -238,7 +239,7 @@ class Master:
 
     def get_user_input_koordinate(self)->Koordinate:
         koordinate = input("Gebe eine Koordinate ein: ")
-        koordinate_list = koordinate.strip.split()
+        koordinate_list = koordinate.strip().split()
         buchstabe = koordinate[0]
         zahl = int(koordinate[1:])
         return Koordinate(buchstabe, zahl)
