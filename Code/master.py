@@ -201,7 +201,9 @@ class Master:
                     except ValueError:
                         print("Ungueltige Eingabe.")
             self.__spieler.append(Spieler(name_spieler, spielfeld_spieler, Spielfeld(), 0))
-            self.spieler_1 = self.__spieler[anzahl-1]
+
+        self.spieler_1 = self.__spieler[0]
+        self.spieler_2 = self.__spieler[1]
         self.clear_terminal()
 
 
