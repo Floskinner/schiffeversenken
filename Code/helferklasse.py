@@ -2,7 +2,7 @@ import datetime
 import json
 from enum import IntEnum, Enum, unique
 from datetime import datetime
-from typing import Union
+from typing import Union, Optional
 
 
 @unique
@@ -33,17 +33,26 @@ class Rahmenzeichen(Enum):
     # TODO Weitere Zeichen einfuegen
 
 
-def user_input(text:str, datentyp:Union[str,int], erlaubte_werte:Union[list[str], list[int]]) -> Union[str,int]:    
+def user_input(text: str, datentyp: Union[str, int], erlaubte_werte: Optional[Union[list[str], list[int]]] = None) -> Union[str, int]:
     ist_valide = False
+    data: datentyp
+
     while not ist_valide:
         try:
             data = input(text)
-            
-            if isinstance(datentyp,int):
-                data_int = int(data)
-        except ValueError:
-            print("Ungueltige Eingabe.")
 
+            if isinstance(datentyp, int):
+                data = int(data)
+
+            if erlaubte_werte is not None:
+                if data not in erlaubte_werte:
+                    raise ValueError
+
+            ist_valide = True
+        except ValueError:
+            print("Ungueltige Eingabe!")
+
+    return data
 
 
 class Speicherverwaltung():
