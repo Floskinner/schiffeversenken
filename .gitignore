@@ -130,4 +130,4 @@ dmypy.json
 .pyre/
 
 # Dia
-Python - Programmentwurf 2021 TIT/Schiffeversenken.dia~
+*.dia~
