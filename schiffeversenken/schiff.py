@@ -1,6 +1,4 @@
 """Modul welches die Klasse Schiff enthalet"""
-
-
 class Schiff():
     """Hiermit kann ein Schiff mit einer entsprechenden Laenge erstellt werden
     """

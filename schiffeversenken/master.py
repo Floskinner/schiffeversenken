@@ -7,11 +7,11 @@ import platform
 import time
 import keyboard
 
-from schiff import Schiff
-from koordinate import Koordinate
-from spieler import Spieler
-from spielfeld import Spielfeld
-from helferklasse import Farben, Rahmenzeichen, Richtung, Status, speichern, laden, user_input
+from .schiff import Schiff
+from .koordinate import Koordinate
+from .spieler import Spieler
+from .spielfeld import Spielfeld
+from .helferklasse import Farben, Rahmenzeichen, Richtung, Status, speichern, laden, user_input
 
 
 class Master:
@@ -517,23 +517,3 @@ class Master:
         elif auswahl == 2:
             pfad: str = user_input("Pfad zum Spielstand: ", str)
             self.__lade_spielstand(pfad)
-
-
-def main(_argv):
-    """Main, die das Modul schiffeversenken ausfuehrt.
-
-    Args:
-        _argv ([type]):
-    """
-    master: Master = Master()
-    master.print_willkommensnachricht()
-    time.sleep(3)
-    master.clear_terminal()
-    auswahl: int = master.print_menu()
-    master.initialisieren(auswahl)
-    while not master.ist_spiel_vorbei:
-        master.spielen()
-
-
-if __name__ == '__main__':
-    main(sys.argv)

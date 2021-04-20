@@ -1,7 +1,7 @@
 """Modul, welches die Klasse Koordinate beinhaltet"""
 from typing import Union, Optional
 
-from helferklasse import Richtung
+from .helferklasse import Richtung
 
 class Koordinate:
     """Speichert einen X und Y Wert. Beim erstellen des Objektes wird direkt 1 abgezogen, damit

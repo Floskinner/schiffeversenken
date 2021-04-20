@@ -1,11 +1,11 @@
 import unittest
 import random
 
-from spielfeld import Spielfeld
-from koordinate import Koordinate
-from schiff import Schiff
-from spieler import Spieler
-from helferklasse import Status, Richtung
+from schiffeversenken.spielfeld import Spielfeld
+from schiffeversenken.koordinate import Koordinate
+from schiffeversenken.schiff import Schiff
+from schiffeversenken.spieler import Spieler
+from schiffeversenken.helferklasse import Status, Richtung
 
 
 class Test_Spieler(unittest.TestCase):

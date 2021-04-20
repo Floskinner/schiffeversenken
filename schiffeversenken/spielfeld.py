@@ -3,9 +3,9 @@
 
 from typing import Optional, Union
 
-from koordinate import Koordinate
-from schiff import Schiff
-from helferklasse import Status, Richtung
+from .koordinate import Koordinate
+from .schiff import Schiff
+from .helferklasse import Status, Richtung
 
 
 class Spielfeld():

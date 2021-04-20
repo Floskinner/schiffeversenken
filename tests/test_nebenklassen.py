@@ -3,10 +3,9 @@ import unittest
 from io import StringIO
 from unittest.mock import patch
 
-import helferklasse
-
-from koordinate import Koordinate
-from schiff import Schiff
+import schiffeversenken.helferklasse as helferklasse
+from schiffeversenken.koordinate import Koordinate
+from schiffeversenken.schiff import Schiff
 
 
 class Test_Nebenklassen(unittest.TestCase):
@@ -42,7 +41,7 @@ class Test_Nebenklassen(unittest.TestCase):
         for expected_input in inputs_int_gut:
 
             with patch('sys.stdin', new=StringIO(str(expected_input))):
-                value = helferklasse.user_input("Eingabe: ", int, inputs_int_valide)
+                value = helferklasse.user_input("Eingabe: ", int(), inputs_int_valide)
                 self.assertTrue(isinstance(value, int))
                 self.assertEquals(value, expected_input)
 

@@ -1,15 +1,18 @@
 #pylint: disable=c
-from spieler import Spieler
-import unittest
-from spielfeld import Spielfeld
-from koordinate import Koordinate
-from schiff import Schiff
-from master import Master
-from helferklasse import Richtung, Status
-from io import StringIO
-from unittest.mock import patch
+
 import os
 import platform
+import unittest
+
+from unittest.mock import patch
+from io import StringIO
+
+from schiffeversenken.spieler import Spieler
+from schiffeversenken.spielfeld import Spielfeld
+from schiffeversenken.koordinate import Koordinate
+from schiffeversenken.schiff import Schiff
+from schiffeversenken.master import Master
+from schiffeversenken.helferklasse import Richtung, Status
 
 
 class Test_Master(unittest.TestCase):
