@@ -37,24 +37,24 @@ class Test_Nebenklassen(unittest.TestCase):
     def test_user_input(self):
 
         inputs_int_gut = (1, 2, 3, 4)
-        inputs_int_schlecht = ("a", "1", 99, 100, 1)
-
         inputs_int_valide = (1, 2, 3, 4)
 
         for expected_input in inputs_int_gut:
 
             with patch('sys.stdin', new=StringIO(str(expected_input))):
-                value = helferklasse.user_input("Eingabe: ", int(), inputs_int_valide)
+                value = helferklasse.user_input("Eingabe: ", int, inputs_int_valide)
                 self.assertTrue(isinstance(value, int))
                 self.assertEquals(value, expected_input)
 
-        counter_bis_gut = 0
+        inputs_str_gut = ("1", "2", "3", "4")
+        inputs_str_valide = ("1", "2", "3", "4")
 
-        # for expected_input in inputs_int_gut:
+        for expected_input in inputs_str_gut:
 
-        #     with patch('sys.stdin', new=StringIO(expected_input)):
-        #         value = helferklasse.user_input("Eingabe: ", int, inputs_int_valide)
-        #         self.assertTrue(isinstance(value, int))
-        #         self.assertEquals(value, expected_input)
+            with patch('sys.stdin', new=StringIO(str(expected_input))):
+                value = helferklasse.user_input("Eingabe: ", str, inputs_str_valide)
+                self.assertTrue(isinstance(value, str))
+                self.assertEquals(value, expected_input)
+        
 
     #TODO Testen von Speichern und Lesen
