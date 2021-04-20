@@ -12,7 +12,7 @@ from schiffeversenken.spielfeld import Spielfeld
 from schiffeversenken.koordinate import Koordinate
 from schiffeversenken.schiff import Schiff
 from schiffeversenken.master import Master
-from schiffeversenken.helferklasse import Richtung, Status
+from schiffeversenken import Richtung, Status
 
 
 class Test_Master(unittest.TestCase):

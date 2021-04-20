@@ -7,11 +7,12 @@ import platform
 import time
 import keyboard
 
+from schiffeversenken import Farben, Rahmenzeichen, Richtung, Status
 from .schiff import Schiff
 from .koordinate import Koordinate
 from .spieler import Spieler
 from .spielfeld import Spielfeld
-from .helferklasse import Farben, Rahmenzeichen, Richtung, Status, speichern, laden, user_input
+from .helferklasse import speichern, laden, user_input
 
 
 class Master:

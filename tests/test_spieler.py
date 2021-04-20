@@ -5,7 +5,7 @@ from schiffeversenken.spielfeld import Spielfeld
 from schiffeversenken.koordinate import Koordinate
 from schiffeversenken.schiff import Schiff
 from schiffeversenken.spieler import Spieler
-from schiffeversenken.helferklasse import Status, Richtung
+from schiffeversenken import Status, Richtung
 
 
 class Test_Spieler(unittest.TestCase):

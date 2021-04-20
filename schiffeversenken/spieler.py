@@ -1,8 +1,8 @@
 """Module der die Spielerklasse enthaelt
 """
+from schiffeversenken import Status
 from .koordinate import Koordinate
 from .spielfeld import Spielfeld
-from .helferklasse import Status
 
 
 class Spieler:

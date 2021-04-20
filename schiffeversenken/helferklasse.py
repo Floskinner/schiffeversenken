@@ -4,46 +4,8 @@
 import datetime
 import json
 
-from enum import IntEnum, Enum, unique
 from datetime import datetime
 from typing import Union, Optional
-
-
-@unique
-class Status(IntEnum):
-    """IntEnum fuer das Spielfeld
-    """
-    DANEBEN = -1
-    WASSER = 0
-    TREFFER = 1
-    SCHIFF = 2
-    UNGUELTIG = 3
-
-
-@unique
-class Farben(Enum):
-    """Enum fuer verschiedene Terminalfarben
-    """
-    GRUEN = "\033[0;32m"
-    FARB_ENDE = "\033[0m"
-
-
-@unique
-class Richtung(Enum):
-    """Enum fuer verschiedene Himmelsrichtungen
-    """
-    NORDEN = 0
-    OSTEN = 1
-    SUEDEN = 2
-    WESTEN = 3
-
-
-class Rahmenzeichen(Enum):
-    """Enum um die Sonderzeichen besser zu ordnen
-    """
-    HEAVY_VERTICAL = "\u2503"
-    # TODO Weitere Zeichen einfuegen
-
 
 def user_input(text: str, datentyp: Union[str, int], erlaubte_werte: Optional[Union[list[str], list[int]]] = None) -> Union[str, int]:
     """Der User wird so lange gezwungen einen Richtige eingabe machen, bis alle Kritieren (type, erlaubte_werte) erfuellt sind
