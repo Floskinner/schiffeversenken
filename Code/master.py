@@ -6,6 +6,7 @@ import os
 import platform
 import time
 import keyboard
+
 from schiff import Schiff
 from koordinate import Koordinate
 from spieler import Spieler
@@ -299,7 +300,7 @@ class Master:
         Returns:
             Richtung: richtung
         """
-        return Richtung(int(input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n").strip()))
+        return Richtung(user_input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n", int()))
 
     @staticmethod
     def get_user_input_name(spieler_nummer: int) -> str:
@@ -311,7 +312,7 @@ class Master:
         Returns:
             str: Spielername des Spielers
         """
-        return input(f"Name von Spieler {spieler_nummer}: ")
+        return user_input(f"Name von Spieler {spieler_nummer}: ", str)
 
     def platziere_schiff(self, spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate) -> Spielfeld:
         """Uebergebenes Schiff wird platziert
@@ -362,15 +363,8 @@ class Master:
         Returns:
             int: gewaehlte Option
         """
-        ist_gueltig = False
         print("Menu:")
-        while not ist_gueltig:
-            auswahl = input("1 - Neues Spiel\n2 - Spiel laden\n")
-            try:
-                if isinstance(int(auswahl), int):
-                    return int(auswahl)
-            except ValueError:
-                ist_gueltig = False
+        auswahl = user_input("1 - Neues Spiel\n2 - Spiel laden\n", int(), (1,2))
 
     def __print_alles_fuer_spielzug(self):
         print(f"{self.aktueller_spieler.name} du bist dran.\n")
