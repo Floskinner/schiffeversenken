@@ -1,3 +1,5 @@
+"""Module der die Spielerklasse enthaelt
+"""
 from koordinate import Koordinate
 from spielfeld import Spielfeld
 from helferklasse import Status
@@ -10,8 +12,8 @@ class Spieler:
     def __init__(self, name: str, spielfeld: Spielfeld, spielfeld_gegner: Spielfeld, punkte: int = 0):
         """Erstelle Spieler
 
-        Args: 
-            name (str): Der Name des Spielers 
+        Args:
+            name (str): Der Name des Spielers
             spielfeld (Spieldfeld): Spielfeld des Spielers
             spielfeld_gegner (Spielfeld): Spielfeld des Gegners
             punkte (int): Punktestand der gewonnenen Spiele
@@ -24,8 +26,8 @@ class Spieler:
     def update_spielfeld_gegner(self, koordinate: Koordinate, status: Status):
         """Aktualisieren des Gegner Spielfelds
 
-        Args: 
-            koordinate (Koordinate): Koordinate des Feldes 
+        Args:
+            koordinate (Koordinate): Koordinate des Feldes
             status (Status): Status des Feldes
         """
         self.__spielfeld_gegner.set_feld(status, koordinate)
@@ -33,8 +35,8 @@ class Spieler:
     def update_spielfeld(self, koordinate: Koordinate, status: Status):
         """Aktualisieren des eigenen Spielfelds
 
-        Args: 
-            koordinate (Koordinate): Koordinate des Feldes 
+        Args:
+            koordinate (Koordinate): Koordinate des Feldes
             status (Status): Status des Feldes
         """
         self.__spielfeld.set_feld(status, koordinate)
@@ -47,8 +49,8 @@ class Spieler:
     def wird_abgeschossen(self, koordinate: Koordinate) -> Status:
         """Prüfen und ändern der Felder des eigenen Spielfelds ob oder ob nicht getroffen wurde
 
-        Args: 
-            koordinate (Koordinate): Koordinate des Feldes 
+        Args:
+            koordinate (Koordinate): Koordinate des Feldes
 
         Returns:
             Status: daneben, Wasser, treffer, Schiff
@@ -83,7 +85,7 @@ class Spieler:
         """Gibt das Spielfeld zurück
 
         Returns:
-            spielfeld 
+            spielfeld
         """
         return self.__spielfeld
 
@@ -92,7 +94,7 @@ class Spieler:
         """Gibt den Spickzettel vom gegnerischen Spielfeld zurück
 
         Returns:
-            spielfeld_gegner 
+            spielfeld_gegner
         """
         return self.__spielfeld_gegner
 

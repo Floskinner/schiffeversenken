@@ -288,7 +288,7 @@ class Master:
         Returns:
             Koordinate: koordinate
         """
-        koordinate = user_input("Gebe eine Koordinate ein: ",str)
+        koordinate = user_input("Gebe eine Koordinate ein: ", str)
         buchstabe = koordinate[0]
         zahl = int(koordinate[1:])
         return Koordinate(buchstabe, zahl)
@@ -364,7 +364,7 @@ class Master:
             int: gewaehlte Option
         """
         print("Menu:")
-        auswahl = user_input("1 - Neues Spiel\n2 - Spiel laden\n", int(), (1,2))
+        auswahl = user_input("1 - Neues Spiel\n2 - Spiel laden\n", int(), (1, 2))
         return auswahl
 
     def __print_alles_fuer_spielzug(self):
@@ -425,7 +425,7 @@ class Master:
 
         pfad = user_input("Pfad zum Speichern (optional auch leer):", str)
         daten = self.__speicher_spielstand_daten()
-        speichern(daten(daten, pfad))
+        speichern(daten, pfad)
 
     def __lade_spielstand(self, pfad: str):
         try:
@@ -457,9 +457,16 @@ class Master:
             sys.exit(self, 1)
 
     def __setzte_speichern_flag(self, zusandt: bool = True):
+        """Beim Beenden des aktuellen Zuges sorgt diese Flag, dass der Spielstand gespeichert wird
+
+        Args:
+            zusandt (bool, optional): Defaults to True.
+        """
         self.__speichern_flag = zusandt
 
     def spielen(self):
+        """Methode die nach dem Initalisieren aufgerufen werden kann, damit die normale Spielabfolge bis zu einem gewinner ausgeführt werden kann
+        """
         self.clear_terminal()
         self.__print_alles_fuer_spielzug()
         koordinate: Koordinate = self.get_user_input_koordinate()
@@ -467,7 +474,7 @@ class Master:
 
         while not gueltiger_schuss:
             gueltiger_schuss = self.fuehre_spielzug_aus(koordinate)
-            
+
         self.print_countdown(5)
         self.toggle_spielzug()
         if self.__speichern_flag:
@@ -498,6 +505,11 @@ class Master:
         return False
 
     def initialisieren(self, auswahl: int):
+        """Bereitet die Klasse mit allen noetigen Initalisierungen vor, damit gespielt werden kann
+
+        Args:
+            auswahl (int): 1 = Neus Spiel, 2 = Spiel Laden
+        """
         if auswahl == 1:
             self.neues_spiel()
             self.aktueller_spieler = self.spieler_1

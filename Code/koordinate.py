@@ -1,6 +1,7 @@
 """Modul, welches die Klasse Koordinate beinhaltet"""
-from helferklasse import Richtung
 from typing import Union, Optional
+
+from helferklasse import Richtung
 
 class Koordinate:
     """Speichert einen X und Y Wert. Beim erstellen des Objektes wird direkt 1 abgezogen, damit
@@ -56,7 +57,8 @@ class Koordinate:
     def richtung(self, richtung: Richtung):
         self.__richtung = richtung
 
-    def __umwandeln_in_int(self, buchstabe: str) -> int:
+    @staticmethod
+    def __umwandeln_in_int(buchstabe: str) -> int:
         """Wandelt Buchsten in den Entsprechenden Index um, wobei A = 1, B = 2, C = 3... entspricht
         Anders gesagt, die Position des Buchstaben im Alphabet
 
