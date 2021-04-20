@@ -365,6 +365,7 @@ class Master:
         """
         print("Menu:")
         auswahl = user_input("1 - Neues Spiel\n2 - Spiel laden\n", int(), (1,2))
+        return auswahl
 
     def __print_alles_fuer_spielzug(self):
         print(f"{self.aktueller_spieler.name} du bist dran.\n")
