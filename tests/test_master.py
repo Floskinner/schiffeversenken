@@ -160,7 +160,7 @@ class Test_Master(unittest.TestCase):
             with patch('sys.stdout', new=StringIO()) as fake_out:
                 got_input:Richtung = self.master.get_user_input_name(1)
                 self.assertEqual(self.master.spieler_1.name, got_input)
-                self.assertEqual(fake_out.getvalue(), "Name von Spieler 1: ")
+                self.assertEqual(fake_out.getvalue(), "\t\t\t\tName von Spieler 1: ")
 
     def test_fuehre_spielzug_aus(self):
         getroffen:bool = self.master.fuehre_spielzug_aus(self.test_koordinate_treffer)
