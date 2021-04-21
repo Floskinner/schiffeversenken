@@ -3,13 +3,14 @@ import unittest
 from io import StringIO
 from unittest.mock import patch
 
-import schiffeversenken.helferklasse as helferklasse
+from schiffeversenken import Richtung
 from schiffeversenken.koordinate import Koordinate
 from schiffeversenken.schiff import Schiff
+import schiffeversenken.helferklasse as helferklasse
 
 
 class Test_Nebenklassen(unittest.TestCase):
-    
+
     def test_schiff(self):
         name = "Zerstoerer"
         groesse = 5
@@ -21,17 +22,32 @@ class Test_Nebenklassen(unittest.TestCase):
     def test_koordinaten(self):
         x_A = "A"
         x_1 = 1
-        
+
+        y_A = "A"
         y_1 = 1
 
-        koordinate = Koordinate(x_A, y_1)
-        koordinate_2 = Koordinate(x_1, y_1)
+        koordinate_x_string = Koordinate(x_A, y_1)
+        koordinate_x_int = Koordinate(x_1, y_1)
+        koordinate_y_string = Koordinate(x_1, y_A)
+        koordinate_x_y_string = Koordinate(x_A, y_A)
 
-        self.assertEqual(koordinate.x_position, 0)
-        self.assertEqual(koordinate.y_position, 0)
-        
-        self.assertEqual(koordinate_2.x_position, 0)
-        self.assertEqual(koordinate_2.y_position, 0)
+        self.assertEqual(koordinate_x_string.x_position, 0)
+        self.assertEqual(koordinate_x_string.y_position, 0)
+
+        self.assertEqual(koordinate_x_int.x_position, 0)
+        self.assertEqual(koordinate_x_int.y_position, 0)
+
+        self.assertEqual(koordinate_y_string.x_position, 0)
+        self.assertEqual(koordinate_y_string.y_position, 0)
+
+        self.assertEqual(koordinate_x_y_string.x_position, 0)
+        self.assertEqual(koordinate_x_y_string.y_position, 0)
+
+        koordinate_mit_richtung = Koordinate(x_1, y_1, Richtung.NORDEN)
+        self.assertEqual(koordinate_mit_richtung.richtung, Richtung.NORDEN)
+
+        koordinate_mit_richtung.richtung = Richtung.SUEDEN
+        self.assertEqual(koordinate_mit_richtung.richtung, Richtung.SUEDEN)
 
     def test_user_input(self):
 
@@ -54,6 +70,5 @@ class Test_Nebenklassen(unittest.TestCase):
                 value = helferklasse.user_input("Eingabe: ", str, inputs_str_valide)
                 self.assertTrue(isinstance(value, str))
                 self.assertEqual(value, expected_input)
-        
 
-    #TODO Testen von Speichern und Lesen
+    # TODO Testen von Speichern und Lesen
