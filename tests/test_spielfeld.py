@@ -96,7 +96,6 @@ class Test_Spielfeld(unittest.TestCase):
         spielfeld_obj = Spielfeld()
         schiff = Schiff("U-Boot", 2)
 
-
         spielfeld_mit_plaziertem_schiff_sueden = [[Status.SCHIFF, Status.SCHIFF, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
                                                   [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
                                                   [Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER, Status.WASSER],
@@ -137,7 +136,6 @@ class Test_Spielfeld(unittest.TestCase):
         koordinate = Koordinate(1, 1, Richtung.WESTEN)  # index [0][0] westen
         self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, schiff)
 
-
         koordinate = Koordinate(12, 1, Richtung.NORDEN)  # index fehlerhaft
         self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, schiff)
         
@@ -145,10 +143,9 @@ class Test_Spielfeld(unittest.TestCase):
         self.assertRaises(IndexError, spielfeld_obj.plaziere_schiff, koordinate, schiff)
 
         spielfeld_obj_befuellt = Spielfeld(spielfeld=self.befuelltes_spielfeld)
-        koordinate_befuellt = Koordinate(4, 8, Richtung.NORDEN) #index[3][7] norden
+        koordinate_befuellt = Koordinate(4, 8, Richtung.NORDEN)  # index[3][7] norden
 
         self.assertRaises(IndexError, spielfeld_obj_befuellt.plaziere_schiff, koordinate_befuellt, schiff)
-
 
     def test_get_status_bei(self):
         spielfeld_obj = Spielfeld()
@@ -177,6 +174,3 @@ class Test_Spielfeld(unittest.TestCase):
         geladenes_spielfeld_obj.reset()
 
         self.assertEqual(geladenes_spielfeld_obj.spielfeld, self.leeres_spielfeld)
-
-if __name__ == '__main__':
-    unittest.main()

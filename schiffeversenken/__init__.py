@@ -2,7 +2,12 @@
 """
 
 from enum import IntEnum, Enum, unique
+from schiffeversenken.schiff import Schiff
 
+__schiffe__: list = [Schiff("Schlachtschiff", 5),
+                    Schiff("Kreuzer", 4), Schiff("Kreuzer", 4),
+                    Schiff("Zerstoerer", 3), Schiff("Zerstoerer", 3), Schiff("Zerstoerer", 3),
+                    Schiff("U-Boot", 2), Schiff("U-Boot", 2), Schiff("U-Boot", 2), Schiff("U-Boot", 2)]
 
 @unique
 class Status(IntEnum):

@@ -1,13 +1,16 @@
 """
 Masterdatei fuer das Spiel Schiffe versenken
 """
+from typing import Optional
+
 import sys
 import os
 import platform
 import time
 import keyboard
 
-from schiffeversenken import Farben, Rahmenzeichen, Richtung, Status
+
+from schiffeversenken import Farben, Rahmenzeichen, Richtung, Status, __schiffe__
 from .schiff import Schiff
 from .koordinate import Koordinate
 from .spieler import Spieler
@@ -21,13 +24,14 @@ class Master:
 
     def __init__(self):
         self.__ist_spiel_vorbei = False
-        self.__schiffe: list = [Schiff("Schlachtschiff", 5),
-                                Schiff("Kreuzer", 4), Schiff("Kreuzer", 4),
-                                Schiff("Zerstoerer", 3), Schiff(
-                                    "Zerstoerer", 3), Schiff("Zerstoerer", 3),
-                                Schiff("U-Boot", 2), Schiff("U-Boot", 2), Schiff("U-Boot", 2), Schiff("U-Boot", 2)]
+
         self.__speichern_flag = False
-        self.__spieler = list()
+
+        self.__spieler_1: Optional[Spieler] = None
+        self.__spieler_2: Optional[Spieler] = None
+
+        self.aktueller_gegner: Optional[Spieler] = None
+        self.aktueller_spieler: Optional[Spieler] = None
 
         keyboard.add_hotkey('ctrl+s', self.__setzte_speichern_flag, args=(), suppress=True, timeout=1, trigger_on_release=False)
 
@@ -176,8 +180,7 @@ class Master:
         # Headerzeile
         self.__print_rahmen_oben()
         print("\t\t\t\t", end='')
-        self.__print_zeile(
-            [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
+        self.__print_zeile([' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
         self.__print_trennlinie()
         cnt_zeile = 1
         # Drehe Spielfeld, damit man es einfacher zeichnen kann
@@ -205,11 +208,12 @@ class Master:
         Args:
             spieler_anzahl (int, optional): [description]. Defaults to 2.
         """
+        spieler = list()
         for anzahl in range(1, 3):
             self.clear_terminal()
             name_spieler = self.get_user_input_name(anzahl)
             spielfeld_spieler = Spielfeld()
-            for schiff in self.__schiffe:
+            for schiff in __schiffe__:
                 ist_platziert = False
                 while not ist_platziert:
                     try:
@@ -228,11 +232,10 @@ class Master:
                     except ValueError:
                         print("Ungueltige Eingabe. Leertaste fuer weiter.")
                         keyboard.wait(hotkey=57)  # enter=28  space=57
-            self.__spieler.append(
-                Spieler(name_spieler, spielfeld_spieler, Spielfeld(), 0))
+            spieler.append(Spieler(name_spieler, spielfeld_spieler, Spielfeld(), 0))
 
-        self.spieler_1 = self.__spieler[0]
-        self.spieler_2 = self.__spieler[1]
+        self.spieler_1 = spieler[0]
+        self.spieler_2 = spieler[1]
         self.clear_terminal()
 
     def __toggle_spielzug(self):
@@ -428,6 +431,7 @@ class Master:
         pfad = user_input("Pfad zum Speichern (optional auch leer):", str)
         daten = self.__speicher_spielstand_daten()
         speichern(daten, pfad)
+        # TODO: Exception abfangen falls speichern nicht möglich
 
     def __lade_spielstand(self, pfad: str):
         try:
