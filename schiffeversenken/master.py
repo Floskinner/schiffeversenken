@@ -115,9 +115,9 @@ class Master:
             elif feld == Status.SCHIFF:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {Farben.GRUEN.value}#{Farben.FARB_ENDE.value} ", end='')
             elif feld == Status.TREFFER:
-                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} X ", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {Farben.ROT.value}X{Farben.FARB_ENDE.value} ", end='')
             elif feld == Status.DANEBEN:
-                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} O ", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {Farben.BLAU.value}O{Farben.FARB_ENDE.value} ", end='')
             else:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {feld} ", end='')
 
@@ -133,7 +133,7 @@ class Master:
         print("\t\t\t\t", end='')
         print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}", end='')
         while i < 43:
-            print("\u2501", end='')
+            print(f"{Rahmenzeichen.HEAVY_HORIZONTAL.value}", end='')
             i = i+1
         print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}")
 
@@ -144,7 +144,7 @@ class Master:
         print("\t\t\t\t", end='')
         print("\u250F", end='')
         while i < 43:
-            print("\u2501", end='')
+            print(f"{Rahmenzeichen.HEAVY_HORIZONTAL.value}", end='')
             i = i+1
         print("\u2513")
 
@@ -155,7 +155,7 @@ class Master:
         print("\t\t\t\t", end='')
         print("\u2517", end='')
         while i < 43:
-            print("\u2501", end='')
+            print(f"{Rahmenzeichen.HEAVY_HORIZONTAL.value}", end='')
             i = i+1
         print("\u251B")
 
@@ -215,7 +215,7 @@ class Master:
                     try:
                         self.clear_terminal()
                         self.print_spielfeld(spielfeld_spieler)
-                        print(f"{name_spieler}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
+                        print(f"\t\t\t\t{name_spieler}, platziere {schiff.name} mit Groesse {schiff.groeße}:")
                         koordinate: Koordinate = self.get_user_input_koordinate()
                         richtung: Richtung = self.get_user_input_richtung()
                         koordinate.richtung = richtung
@@ -254,7 +254,7 @@ class Master:
             time.sleep(1)
             zeit -= 1
 
-    def print_spielende(self):
+    def __print_spielende(self):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
         print(f"{self.__aktueller_spieler.name} hat gewonnen! Glueckwunsch!")
@@ -289,7 +289,7 @@ class Master:
         Returns:
             Koordinate: koordinate
         """
-        koordinate = user_input("Gebe eine Koordinate ein: ", str)
+        koordinate = user_input("\t\t\t\tGebe eine Koordinate ein: ", str)
         buchstabe = koordinate[0]
         zahl = int(koordinate[1:])
         return Koordinate(buchstabe, zahl)
@@ -301,7 +301,7 @@ class Master:
         Returns:
             Richtung: richtung
         """
-        return Richtung(user_input("Waehle Richtung:\n0 - Norden\n1 - Osten\n2 - Sueden\n3 - Westen\n", int()))
+        return Richtung(user_input("\t\t\t\tWaehle Richtung:\n\t\t\t\t0 - Norden\n\t\t\t\t1 - Osten\n\t\t\t\t2 - Sueden\n\t\t\t\t3 - Westen\n\t\t\t\t", int()))
 
     @staticmethod
     def get_user_input_name(spieler_nummer: int) -> str:
@@ -313,7 +313,7 @@ class Master:
         Returns:
             str: Spielername des Spielers
         """
-        return user_input(f"Name von Spieler {spieler_nummer}: ", str)
+        return user_input(f"\t\t\t\tName von Spieler {spieler_nummer}: ", str)
 
     def platziere_schiff(self, spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate) -> Spielfeld:
         """Uebergebenes Schiff wird platziert
@@ -335,22 +335,23 @@ class Master:
         """
         Gibt Willkommensnachricht aus
         """
-        print("\u2554", end='')
+        print("\t\t\t\t\u2554", end='')
         i = 0
         while i < 71:
             print("\u2550", end='')
             i = i+1
         print("\u2557", end='')
         print()
-        print("\u2551\t  _____              _          _      ___   ___\t\t\u2551")
-        print("\u2551\t / ____|            | |        |_|    / __| / __|   ___\\ \t\u2551")
-        print("\u2551\t| (___       ____   | |___      _    | |__  | |__  / __ \\\t\u2551")
-        print("\u2551\t\\___  \\    /  __|   |     \\    | |   |  __| | ___|| |__|_|\t\u2551")
-        print("\u2551\t ____) |  |  (___   |  __  |   | |   | |    | |   | |_____\t\u2551")
-        print("\u2551\t|_____/    \\____|   |_|  |_|   |_|   |_|    |_|   \\______|\t\u2551")
-        print("\u2551\t\t\t\t\t\t\t\t\t\u2551")
-        print("\u2551\t\t\t\tVERSENKEN\t\t\t\t\u2551")
-        print("\u255A", end='')
+        print("\t\t\t\t\u2551\t  _____              _          _      ___   ___\t\t\u2551")
+        print("\t\t\t\t\u2551\t / ____|            | |        |_|    / __| / __|   ___\\ \t\u2551")
+        print("\t\t\t\t\u2551\t| (___       ____   | |___      _    | |__  | |__  / __ \\\t\u2551")
+        print("\t\t\t\t\u2551\t\\___  \\    /  __|   |     \\    | |   |  __| | ___|| |__|_|\t\u2551")
+        print("\t\t\t\t\u2551\t ____) |  |  (___   |  __  |   | |   | |    | |   | |_____\t\u2551")
+        print("\t\t\t\t\u2551\t|_____/    \\____|   |_|  |_|   |_|   |_|    |_|   \\______|\t\u2551")
+        print("\t\t\t\t\u2551\t\t\t\t\t\t\t\t\t\u2551")
+        print("\t\t\t\t\u2551\t\t\t\tVERSENKEN\t\t\t\t\u2551")
+        print("\t\t\t\t\u255A", end='')
+        #print("\t\t\t\t", end='')
         while i > 0:
             print("\u2550", end='')
             i = i-1
@@ -364,17 +365,17 @@ class Master:
         Returns:
             int: gewaehlte Option
         """
-        print("Menu:")
-        auswahl = user_input("1 - Neues Spiel\n2 - Spiel laden\n", int(), (1, 2))
+        print("\t\t\t\tMenu:")
+        auswahl = user_input("\t\t\t\t1 - Neues Spiel\n\t\t\t\t2 - Spiel laden\t\t", int(), (1, 2))
         return auswahl
 
     def __print_alles_fuer_spielzug(self):
-        print(f"{self.aktueller_spieler.name} du bist dran.\n")
-        print("Hier hast du schon ueberall hingeschossen: ")
+        print(f"\t\t\t\t{self.aktueller_spieler.name} du bist dran.\n")
+        print("\t\t\t\tHier hast du schon ueberall hingeschossen: ")
         self.print_spielfeld(self.aktueller_spieler.spielfeld_gegner)
-        print("\nEigenes Spielfeld:")
+        print("\n\t\t\t\tEigenes Spielfeld:")
         self.print_spielfeld(self.aktueller_spieler.spielfeld)
-        print(f"{self.aktueller_spieler.name}, wo willst du hinschiessen?")
+        print(f"\t\t\t\t{self.aktueller_spieler.name}, wo willst du hinschiessen?")
 
     @staticmethod
     def clear_terminal():
@@ -483,7 +484,7 @@ class Master:
             self.__setzte_speichern_flag(False)
 
         if self.__ist_spiel_vorbei:
-            self.print_spielende()
+            self.__print_spielende()
 
     def fuehre_spielzug_aus(self, koordinate: Koordinate) -> bool:
         """Spielzug (Schuss) ausfuehren.
