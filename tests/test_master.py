@@ -195,9 +195,11 @@ class Test_Master(unittest.TestCase):
             master.spielen()
             self.assertEqual(master.ist_spiel_vorbei, True)
 
-    def test_toggle_spielzug(self):
-        self.master.toggle_spielzug()
-        self.assertEqual(self.spieler_2, self.master.aktueller_spieler)
+    def test_initialisieren(self):       
+        with patch('sys.stdin', new=StringIO("tests\\test_speichern.json")):
+            self.master.initialisieren(2)
+            self.assertEqual(self.master.aktueller_spieler.name, "eins")
+            self.assertEqual(self.master.aktueller_gegner.name, "zwei")
 
     def test_get_spieler_1(self):
         spieler = self.master.spieler_1
