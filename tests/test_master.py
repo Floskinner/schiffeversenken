@@ -111,7 +111,8 @@ class Test_Master(unittest.TestCase):
         self.assertEqual(Status.UNGUELTIG, status)
 
     def test_platziere_schiffe(self):
-        spielfeld:Spielfeld = self.master.platziere_schiff(Spielfeld(), Schiff("Schlachtschiff", 5), Koordinate("A",1, Richtung.SUEDEN))
+        spielfeld:Spielfeld = Spielfeld()
+        self.master.platziere_schiff(spielfeld, Schiff("Schlachtschiff", 5), Koordinate("A",1, Richtung.SUEDEN))
         with patch('sys.stdout', new=StringIO()) as fake_out:
             self.master.print_spielfeld(spielfeld)
             count_schiffe = fake_out.getvalue().count('#')

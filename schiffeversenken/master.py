@@ -220,7 +220,7 @@ class Master:
                         koordinate: Koordinate = self.get_user_input_koordinate()
                         richtung: Richtung = self.get_user_input_richtung()
                         koordinate.richtung = richtung
-                        spielfeld_spieler = self.platziere_schiff(spielfeld_spieler, schiff, koordinate)
+                        self.platziere_schiff(spielfeld_spieler, schiff, koordinate)
                         ist_platziert = True
                     except IndexError:
                         print("Das Schiff kann so nicht platziert werden. Leertaste fuer weiter.")
@@ -316,7 +316,7 @@ class Master:
         """
         return user_input(f"\t\t\t\tName von Spieler {spieler_nummer}: ", str)
 
-    def platziere_schiff(self, spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate) -> Spielfeld:
+    def platziere_schiff(self, spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate):
         """Uebergebenes Schiff wird platziert
 
         Args:
@@ -329,7 +329,6 @@ class Master:
         """
         self.print_spielfeld(spielfeld)
         spielfeld.plaziere_schiff(koordinate, schiff)
-        return spielfeld
 
     @staticmethod
     def print_willkommensnachricht():
