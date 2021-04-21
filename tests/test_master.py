@@ -192,8 +192,13 @@ class Test_Master(unittest.TestCase):
         master.print_spielfeld(spieler_1.spielfeld)
 
         with patch('sys.stdin', new=StringIO("A1")):
-            master.spielen()
-            self.assertEqual(master.ist_spiel_vorbei, True)
+            with patch('sys.stdout', new=StringIO()) as fake_out:
+                master.spielen()
+                self.assertEqual(master.ist_spiel_vorbei, True)
+                ist_drin = False
+                if "Glueckwunsch!" in fake_out.getvalue():
+                    ist_drin = True
+                self.assertEqual(ist_drin, True)
 
     def test_initialisieren(self):       
         with patch('sys.stdin', new=StringIO("tests\\test_speichern.json")):
