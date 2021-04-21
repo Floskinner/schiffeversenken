@@ -235,7 +235,7 @@ class Master:
         self.spieler_2 = self.__spieler[1]
         self.clear_terminal()
 
-    def toggle_spielzug(self):
+    def __toggle_spielzug(self):
         """Tausche aktueller_spieler und aktueller_gegner
         """
         temp: Spieler = self.aktueller_spieler
@@ -477,7 +477,7 @@ class Master:
             gueltiger_schuss = self.fuehre_spielzug_aus(koordinate)
 
         self.print_countdown(5)
-        self.toggle_spielzug()
+        self.__toggle_spielzug()
         if self.__speichern_flag:
             self.__speicher_spielstand()
             self.__setzte_speichern_flag(False)
