@@ -110,10 +110,10 @@ class Master:
         self.__aktueller_gegner = aktueller_gegner
 
     @staticmethod
-    def __print_zeile(daten):
+    def __print_zeile(zeile):
         j = 0
-        cnt_spalten = len(daten)
-        for feld in daten:
+        cnt_spalten = len(zeile)
+        for feld in zeile:
             if feld == Status.WASSER:
                 print(f"{Rahmenzeichen.HEAVY_VERTICAL.value}   ", end='')
             elif feld == Status.SCHIFF:
@@ -164,14 +164,14 @@ class Master:
         print("\u251B")
 
     @staticmethod
-    def __get_zeilen_von_spielfeld(spielfeld: Spielfeld) -> list:
-        neues_array: list = list()
+    def __get_zeilen_von_spielfeld(spielfeld: Spielfeld) -> list[list[Status]]:
+        zeilen: list[list[Status]] = list()
         for row in range(len(spielfeld.spielfeld)):
-            zeile: list = list()
+            zeile: list[Status] = list()
             for column in range(len(spielfeld.spielfeld[row])):
                 zeile.append(spielfeld.spielfeld[column][row])
-            neues_array.append(zeile)
-        return neues_array
+            zeilen.append(zeile)
+        return zeilen
 
     def print_spielfeld(self, spielfeld: Spielfeld):
         """
@@ -204,14 +204,11 @@ class Master:
 
     def neues_spiel(self):
         """Für jeden Spieler den Namen einlesen, Schiffe platzieren
-
-        Args:
-            spieler_anzahl (int, optional): [description]. Defaults to 2.
         """
         spieler = list()
-        for anzahl in range(1, 3):
+        for spieler_nummer in range(1, 3):
             self.clear_terminal()
-            name_spieler = self.get_user_input_name(anzahl)
+            name_spieler = self.get_user_input_name(spieler_nummer)
             spielfeld_spieler = Spielfeld()
             for schiff in __schiffe__:
                 ist_platziert = False
@@ -231,7 +228,7 @@ class Master:
                         ist_platziert = False
                     except ValueError:
                         print("Ungueltige Eingabe. Leertaste fuer weiter.")
-                        keyboard.wait(hotkey=57)  # enter=28  space=57
+                        keyboard.wait(hotkey='space')  # enter=28  space=57
             spieler.append(Spieler(name_spieler, spielfeld_spieler, Spielfeld(), 0))
 
         self.spieler_1 = spieler[0]
@@ -257,10 +254,10 @@ class Master:
             time.sleep(1)
             zeit -= 1
 
-    def __print_spielende(self):
+    def __print_spielende(self, gewinner: Spieler):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
-        print(f"{self.__aktueller_spieler.name} hat gewonnen! Glueckwunsch!")
+        print(f"{gewinner.name} hat gewonnen! Glueckwunsch!")
 
     @staticmethod
     def schiessen(spieler: Spieler, gegner: Spieler, koordinate: Koordinate) -> Status:
@@ -354,7 +351,6 @@ class Master:
         print("\t\t\t\t\u2551\t\t\t\t\t\t\t\t\t\u2551")
         print("\t\t\t\t\u2551\t\t\t\tVERSENKEN\t\t\t\t\u2551")
         print("\t\t\t\t\u255A", end='')
-        #print("\t\t\t\t", end='')
         while i > 0:
             print("\u2550", end='')
             i = i-1
@@ -488,7 +484,7 @@ class Master:
             self.__setzte_speichern_flag(False)
 
         if self.__ist_spiel_vorbei:
-            self.__print_spielende()
+            self.__print_spielende(self.__aktueller_spieler)
 
     def fuehre_spielzug_aus(self, koordinate: Koordinate) -> bool:
         """Spielzug (Schuss) ausfuehren.
