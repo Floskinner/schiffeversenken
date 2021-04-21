@@ -254,7 +254,8 @@ class Master:
             time.sleep(1)
             zeit -= 1
 
-    def __print_spielende(self, gewinner: Spieler):
+    @staticmethod
+    def __print_spielende(gewinner: Spieler):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
         print(f"{gewinner.name} hat gewonnen! Glueckwunsch!")
@@ -423,11 +424,13 @@ class Master:
     def __speicher_spielstand(self):
         """Fragt den User nach einem Pfad und speichert diesen am angegeben Ort. Wenn String leer, dann aktueller Pfad
         """
-
-        pfad = user_input("Pfad zum Speichern (optional auch leer):", str)
-        daten = self.__speicher_spielstand_daten()
-        speichern(daten, pfad)
-        # TODO: Exception abfangen falls speichern nicht möglich
+        try:
+            pfad = user_input("Pfad zum Speichern (optional auch leer):", str)
+            daten = self.__speicher_spielstand_daten()
+            speichern(daten, pfad)
+        except IOError:
+            print("Spielstand konnte nicht gespeichert werden! Pls try again")
+            self.__speicher_spielstand()
 
     def __lade_spielstand(self, pfad: str):
         try:
@@ -453,10 +456,10 @@ class Master:
 
         except KeyError:
             print("Gespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
-            sys.exit(self, 1)
-        except IOError:
+            sys.exit(1)
+        except (IOError, FileNotFoundError, TypeError):
             print("Fehler beim Laden der Daten! Bitte neu versuchen")
-            sys.exit(self, 1)
+            sys.exit(1)
 
     def __setzte_speichern_flag(self, zusandt: bool = True):
         """Beim Beenden des aktuellen Zuges sorgt diese Flag, dass der Spielstand gespeichert wird
