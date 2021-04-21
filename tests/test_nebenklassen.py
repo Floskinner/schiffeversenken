@@ -43,7 +43,7 @@ class Test_Nebenklassen(unittest.TestCase):
             with patch('sys.stdin', new=StringIO(str(expected_input))):
                 value = helferklasse.user_input("Eingabe: ", int(), inputs_int_valide)
                 self.assertTrue(isinstance(value, int))
-                self.assertEquals(value, expected_input)
+                self.assertEqual(value, expected_input)
 
         inputs_str_gut = ("1", "2", "3", "4")
         inputs_str_valide = ("1", "2", "3", "4")
@@ -53,7 +53,7 @@ class Test_Nebenklassen(unittest.TestCase):
             with patch('sys.stdin', new=StringIO(str(expected_input))):
                 value = helferklasse.user_input("Eingabe: ", str, inputs_str_valide)
                 self.assertTrue(isinstance(value, str))
-                self.assertEquals(value, expected_input)
+                self.assertEqual(value, expected_input)
         
 
     #TODO Testen von Speichern und Lesen
