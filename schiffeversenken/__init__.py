@@ -20,6 +20,8 @@ class Farben(Enum):
     """Enum fuer verschiedene Terminalfarben
     """
     GRUEN = "\033[0;32m"
+    ROT = "\033[31m"
+    BLAU = "\033[34m"
     FARB_ENDE = "\033[0m"
 
 
