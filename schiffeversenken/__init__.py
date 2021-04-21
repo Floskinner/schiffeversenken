@@ -39,4 +39,4 @@ class Rahmenzeichen(Enum):
     """Enum um die Sonderzeichen besser zu ordnen
     """
     HEAVY_VERTICAL = "\u2503"
-    # TODO Weitere Zeichen einfuegen
+    HEAVY_HORIZONTAL = "\u2501"
