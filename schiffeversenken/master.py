@@ -360,11 +360,11 @@ class Master:
         """Fragt den User nach einem Pfad und speichert diesen am angegeben Ort. Wenn String leer, dann aktueller Pfad
         """
         try:
-            pfad = user_input("Pfad zum Speichern (optional auch leer):", str)
+            pfad = user_input("\t\t\t\tPfad zum Speichern (optional auch leer):", str)
             daten = self.__speicher_spielstand_daten()
             speichern(daten, pfad)
         except IOError:
-            print("Spielstand konnte nicht gespeichert werden! Pls try again")
+            print("\t\t\t\tSpielstand konnte nicht gespeichert werden! Pls try again")
             self.__speicher_spielstand()
 
     def __lade_spielstand(self, pfad: str):
@@ -390,10 +390,10 @@ class Master:
                                             aktueller_spieler_gegner_spielfeld_gegner, aktueller_spieler_gegner_punkte)
 
         except KeyError:
-            print("Gespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
+            print("\t\t\t\tGespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
             sys.exit(1)
         except (IOError, FileNotFoundError, TypeError):
-            print("Fehler beim Laden der Daten! Bitte neu versuchen")
+            print("\t\t\t\tFehler beim Laden der Daten! Bitte neu versuchen")
             sys.exit(1)
 
     def __setzte_speichern_flag(self, zusandt: bool = True):
@@ -434,7 +434,7 @@ class Master:
         Returns:
             Koordinate: koordinate
         """
-        koordinate = user_input("\t\t\t\tGebe eine Koordinate ein: ", str)
+        koordinate = user_input("\n\t\t\t\tGebe eine Koordinate ein: ", str)
         buchstabe = koordinate[0]
         zahl = int(koordinate[1:])
         return Koordinate(buchstabe, zahl)
@@ -446,7 +446,7 @@ class Master:
         Returns:
             Richtung: richtung
         """
-        return Richtung(user_input("\t\t\t\tWaehle Richtung:\n\t\t\t\t0 - Norden\n\t\t\t\t1 - Osten\n\t\t\t\t2 - Sueden\n\t\t\t\t3 - Westen\n\t\t\t\t", int()))
+        return Richtung(user_input("\n\t\t\t\tWaehle Richtung:\n\t\t\t\t0 - Norden\n\t\t\t\t1 - Osten\n\t\t\t\t2 - Sueden\n\t\t\t\t3 - Westen\n\t\t\t\t", int()))
 
     @staticmethod
     def get_user_input_name(spieler_nummer: int) -> str:
@@ -458,7 +458,7 @@ class Master:
         Returns:
             str: Spielername des Spielers
         """
-        return user_input(f"\t\t\t\tName von Spieler {spieler_nummer}: ", str)
+        return user_input(f"\n\t\t\t\tName von Spieler {spieler_nummer}: ", str)
 
     def platziere_schiff(self, spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate):
         """Uebergebenes Schiff wird platziert
@@ -471,7 +471,6 @@ class Master:
         Returns:
             Spielfeld: Spielfeld mit platziertem Schiff
         """
-        self.print_spielfeld(spielfeld)
         spielfeld.plaziere_schiff(koordinate, schiff)
 
     def spielen(self):
@@ -505,13 +504,13 @@ class Master:
         """
         schuss_ergebnis: Status = self.schiessen(self.aktueller_spieler, self.aktueller_gegner, koordinate)
         if schuss_ergebnis == Status.TREFFER:
-            print("Treffer!")
+            print("\t\t\t\tTreffer!")
             self.__ist_spiel_vorbei = self.aktueller_gegner.is_tot()
             return True
         if schuss_ergebnis == Status.DANEBEN:
-            print("Daneben!")
+            print("\t\t\t\tDaneben!")
             return True
-        print("Ungueltige Koordinate!")
+        print("\t\t\t\tUngueltige Koordinate!")
         return False
 
     def initialisieren(self, auswahl: int):
@@ -525,5 +524,5 @@ class Master:
             self.aktueller_spieler = self.spieler_1
             self.aktueller_gegner = self.spieler_2
         elif auswahl == 2:
-            pfad: str = user_input("Pfad zum Spielstand: ", str)
+            pfad: str = user_input("\t\t\t\tPfad zum Spielstand: ", str)
             self.__lade_spielstand(pfad)
