@@ -19,7 +19,7 @@ from .helferklasse import speichern, laden, user_input
 
 
 class Master:
-    """[summary]
+    """Klasse die das ganze Spiel verwaltet und steuert
     """
 
     def __init__(self):
@@ -30,8 +30,8 @@ class Master:
         self.__spieler_1: Optional[Spieler] = None
         self.__spieler_2: Optional[Spieler] = None
 
-        self.aktueller_gegner: Optional[Spieler] = None
-        self.aktueller_spieler: Optional[Spieler] = None
+        self.__aktueller_gegner: Optional[Spieler] = None
+        self.__aktueller_spieler: Optional[Spieler] = None
 
         keyboard.add_hotkey('ctrl+s', self.__setzte_speichern_flag, args=(), suppress=True, timeout=1, trigger_on_release=False)
 
@@ -58,6 +58,9 @@ class Master:
 
     @spieler_1.setter
     def spieler_1(self, spieler_1: Spieler):
+        """
+        Setter fuer den Spieler 1
+        """
         self.__spieler_1 = spieler_1
 
     @property
@@ -71,6 +74,9 @@ class Master:
 
     @spieler_2.setter
     def spieler_2(self, spieler_2: Spieler):
+        """
+        Setter fuer den Spieler 2
+        """
         self.__spieler_2 = spieler_2
 
     @property
@@ -108,6 +114,62 @@ class Master:
             aktueller_gegner (Spieler): Spieler, der gerade nicht dran ist.
         """
         self.__aktueller_gegner = aktueller_gegner
+
+    @staticmethod
+    def print_willkommensnachricht():
+        """
+        Gibt Willkommensnachricht aus
+        """
+        print("\t\t\t\t\u2554", end='')
+        i = 0
+        while i < 71:
+            print("\u2550", end='')
+            i = i+1
+        print("\u2557", end='')
+        print()
+        print("\t\t\t\t\u2551\t  _____              _          _      ___   ___\t\t\u2551")
+        print("\t\t\t\t\u2551\t / ____|            | |        |_|    / __| / __|   ___\\ \t\u2551")
+        print("\t\t\t\t\u2551\t| (___       ____   | |___      _    | |__  | |__  / __ \\\t\u2551")
+        print("\t\t\t\t\u2551\t\\___  \\    /  __|   |     \\    | |   |  __| | ___|| |__|_|\t\u2551")
+        print("\t\t\t\t\u2551\t ____) |  |  (___   |  __  |   | |   | |    | |   | |_____\t\u2551")
+        print("\t\t\t\t\u2551\t|_____/    \\____|   |_|  |_|   |_|   |_|    |_|   \\______|\t\u2551")
+        print("\t\t\t\t\u2551\t\t\t\t\t\t\t\t\t\u2551")
+        print("\t\t\t\t\u2551\t\t\t\tVERSENKEN\t\t\t\t\u2551")
+        print("\t\t\t\t\u255A", end='')
+        while i > 0:
+            print("\u2550", end='')
+            i = i-1
+        print("\u255D", end='')
+        print()
+
+    def print_spielfeld(self, spielfeld: Spielfeld):
+        """
+        Gibt Spielfeld aus.
+        """
+        # Headerzeile
+        self.__print_rahmen_oben()
+        print("\t\t\t\t", end='')
+        self.__print_zeile([' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
+        self.__print_trennlinie()
+        cnt_zeile = 1
+        # Drehe Spielfeld, damit man es einfacher zeichnen kann
+        gedrehtes_spielfeld = self.__get_zeilen_von_spielfeld(spielfeld)
+
+        for zeile in gedrehtes_spielfeld:
+            if cnt_zeile == 10:
+                print("\t\t\t\t", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile}", end='')
+
+            else:
+                print("\t\t\t\t", end='')
+                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile} ", end='')
+
+            self.__print_zeile(zeile)
+            if cnt_zeile < 10:
+                self.__print_trennlinie()
+            else:
+                self.__print_rahmen_unten()
+            cnt_zeile = cnt_zeile+1
 
     @staticmethod
     def __print_zeile(zeile):
@@ -173,34 +235,52 @@ class Master:
             zeilen.append(zeile)
         return zeilen
 
-    def print_spielfeld(self, spielfeld: Spielfeld):
+    @staticmethod
+    def clear_terminal():
         """
-        Gibt Spielfeld aus.
+        Löscht Inhalt der Shell
         """
-        # Headerzeile
-        self.__print_rahmen_oben()
-        print("\t\t\t\t", end='')
-        self.__print_zeile([' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
-        self.__print_trennlinie()
-        cnt_zeile = 1
-        # Drehe Spielfeld, damit man es einfacher zeichnen kann
-        gedrehtes_spielfeld = self.__get_zeilen_von_spielfeld(spielfeld)
+        if platform.system() == "Windows":
+            os.system('cls')
+        if platform.system() == "Linux":
+            os.system('clear')
 
-        for zeile in gedrehtes_spielfeld:
-            if cnt_zeile == 10:
-                print("\t\t\t\t", end='')
-                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile}", end='')
+    @staticmethod
+    def print_countdown(zeit: int = 3):
+        """Zaehle einen Countdown herunter
 
-            else:
-                print("\t\t\t\t", end='')
-                print(f"{Rahmenzeichen.HEAVY_VERTICAL.value} {cnt_zeile} ", end='')
+        Args:
+            zeit (int, optional): Die Sekunden die, der Countdown brauchen soll. Defaults to 3.
+        """
+        while zeit:
+            print(f"Anzeige wird in {zeit} Sekunden geloescht.")
+            time.sleep(1)
+            zeit -= 1
 
-            self.__print_zeile(zeile)
-            if cnt_zeile < 10:
-                self.__print_trennlinie()
-            else:
-                self.__print_rahmen_unten()
-            cnt_zeile = cnt_zeile+1
+    @staticmethod
+    def __print_spielende(gewinner: Spieler):
+        """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
+        """
+        print(f"{gewinner.name} hat gewonnen! Glueckwunsch!")
+
+    @staticmethod
+    def print_menu() -> int:
+        """Ausgabe des Menus und Einlesen einer gueltigen Option
+
+        Returns:
+            int: gewaehlte Option
+        """
+        print("\t\t\t\tMenu:")
+        auswahl = user_input("\t\t\t\t1 - Neues Spiel\n\t\t\t\t2 - Spiel laden\t\t", int(), (1, 2))
+        return auswahl
+
+    def __print_alles_fuer_spielzug(self):
+        print(f"\t\t\t\t{self.aktueller_spieler.name} du bist dran.\n")
+        print("\t\t\t\tHier hast du schon ueberall hingeschossen: ")
+        self.print_spielfeld(self.aktueller_spieler.spielfeld_gegner)
+        print("\n\t\t\t\tEigenes Spielfeld:")
+        self.print_spielfeld(self.aktueller_spieler.spielfeld)
+        print(f"\t\t\t\t{self.aktueller_spieler.name}, wo willst du hinschiessen?")
 
     def neues_spiel(self):
         """Für jeden Spieler den Namen einlesen, Schiffe platzieren
@@ -242,23 +322,87 @@ class Master:
         self.aktueller_spieler = self.aktueller_gegner
         self.aktueller_gegner = temp
 
-    @staticmethod
-    def print_countdown(zeit: int = 3):
-        """Zaehle einen Countdown herunter
+    def __speicher_spielstand_daten(self) -> dict:
+        """Sammelt die benoetigten Daten der Aktuellen Spieler und gibt diese zurueck
+
+        Returns:
+            dict: fertiges dict zum speichern
+        """
+        daten: dict = {}
+
+        # Allgemeine Daten wie Name und Punkte
+        daten["master"] = {
+            "aktueller_spieler": {
+                "name": self.aktueller_spieler.name,
+                "punkte": self.aktueller_spieler.punkte
+            },
+            "aktueller_gegner": {
+                "name": self.aktueller_gegner.name,
+                "punkte": self.aktueller_gegner.punkte
+            }
+        }
+
+        # Spielfeder fuer aktueller Spieler
+        daten[self.aktueller_spieler.name] = {
+            "spielfeld": self.aktueller_spieler.spielfeld.spielfeld,
+            "spielfeld_gegner": self.aktueller_spieler.spielfeld_gegner.spielfeld
+        }
+
+        # Spielfeder fuer aktueller gegner Spieler
+        daten[self.aktueller_gegner.name] = {
+            "spielfeld": self.aktueller_gegner.spielfeld.spielfeld,
+            "spielfeld_gegner": self.aktueller_gegner.spielfeld_gegner.spielfeld
+        }
+
+        return daten
+
+    def __speicher_spielstand(self):
+        """Fragt den User nach einem Pfad und speichert diesen am angegeben Ort. Wenn String leer, dann aktueller Pfad
+        """
+        try:
+            pfad = user_input("Pfad zum Speichern (optional auch leer):", str)
+            daten = self.__speicher_spielstand_daten()
+            speichern(daten, pfad)
+        except IOError:
+            print("Spielstand konnte nicht gespeichert werden! Pls try again")
+            self.__speicher_spielstand()
+
+    def __lade_spielstand(self, pfad: str):
+        try:
+            daten: dict = laden(pfad)
+
+            aktueller_spieler_master = daten["master"]["aktueller_spieler"]
+            aktueller_spieler_gegner_master = daten["master"]["aktueller_gegner"]
+
+            aktueller_spieler_name = aktueller_spieler_master["name"]
+            aktueller_spieler_punkte = aktueller_spieler_master["punkte"]
+            aktueller_spieler_spielfeld = Spielfeld(spielfeld=daten[aktueller_spieler_name]["spielfeld"])
+            aktueller_spieler_spielfeld_gegner = Spielfeld(spielfeld=daten[aktueller_spieler_name]["spielfeld_gegner"])
+
+            aktueller_spieler_gegner_name = aktueller_spieler_gegner_master["name"]
+            aktueller_spieler_gegner_punkte = aktueller_spieler_gegner_master["punkte"]
+            aktueller_spieler_gegner_spielfeld = Spielfeld(spielfeld=daten[aktueller_spieler_gegner_name]["spielfeld"])
+            aktueller_spieler_gegner_spielfeld_gegner = Spielfeld(spielfeld=daten[aktueller_spieler_gegner_name]["spielfeld_gegner"])
+
+            self.aktueller_spieler = Spieler(aktueller_spieler_name, aktueller_spieler_spielfeld,
+                                             aktueller_spieler_spielfeld_gegner, aktueller_spieler_punkte)
+            self.aktueller_gegner = Spieler(aktueller_spieler_gegner_name, aktueller_spieler_gegner_spielfeld,
+                                            aktueller_spieler_gegner_spielfeld_gegner, aktueller_spieler_gegner_punkte)
+
+        except KeyError:
+            print("Gespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
+            sys.exit(1)
+        except (IOError, FileNotFoundError, TypeError):
+            print("Fehler beim Laden der Daten! Bitte neu versuchen")
+            sys.exit(1)
+
+    def __setzte_speichern_flag(self, zusandt: bool = True):
+        """Beim Beenden des aktuellen Zuges sorgt diese Flag, dass der Spielstand gespeichert wird
 
         Args:
-            zeit (int, optional): Die Sekunden die, der Countdown brauchen soll. Defaults to 3.
+            zusandt (bool, optional): Defaults to True.
         """
-        while zeit:
-            print(f"Anzeige wird in {zeit} Sekunden geloescht.")
-            time.sleep(1)
-            zeit -= 1
-
-    @staticmethod
-    def __print_spielende(gewinner: Spieler):
-        """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
-        """
-        print(f"{gewinner.name} hat gewonnen! Glueckwunsch!")
+        self.__speichern_flag = zusandt
 
     @staticmethod
     def schiessen(spieler: Spieler, gegner: Spieler, koordinate: Koordinate) -> Status:
@@ -330,144 +474,6 @@ class Master:
         self.print_spielfeld(spielfeld)
         spielfeld.plaziere_schiff(koordinate, schiff)
 
-    @staticmethod
-    def print_willkommensnachricht():
-        """
-        Gibt Willkommensnachricht aus
-        """
-        print("\t\t\t\t\u2554", end='')
-        i = 0
-        while i < 71:
-            print("\u2550", end='')
-            i = i+1
-        print("\u2557", end='')
-        print()
-        print("\t\t\t\t\u2551\t  _____              _          _      ___   ___\t\t\u2551")
-        print("\t\t\t\t\u2551\t / ____|            | |        |_|    / __| / __|   ___\\ \t\u2551")
-        print("\t\t\t\t\u2551\t| (___       ____   | |___      _    | |__  | |__  / __ \\\t\u2551")
-        print("\t\t\t\t\u2551\t\\___  \\    /  __|   |     \\    | |   |  __| | ___|| |__|_|\t\u2551")
-        print("\t\t\t\t\u2551\t ____) |  |  (___   |  __  |   | |   | |    | |   | |_____\t\u2551")
-        print("\t\t\t\t\u2551\t|_____/    \\____|   |_|  |_|   |_|   |_|    |_|   \\______|\t\u2551")
-        print("\t\t\t\t\u2551\t\t\t\t\t\t\t\t\t\u2551")
-        print("\t\t\t\t\u2551\t\t\t\tVERSENKEN\t\t\t\t\u2551")
-        print("\t\t\t\t\u255A", end='')
-        while i > 0:
-            print("\u2550", end='')
-            i = i-1
-        print("\u255D", end='')
-        print()
-
-    @staticmethod
-    def print_menu() -> int:
-        """Ausgabe des Menus und Einlesen einer gueltigen Option
-
-        Returns:
-            int: gewaehlte Option
-        """
-        print("\t\t\t\tMenu:")
-        auswahl = user_input("\t\t\t\t1 - Neues Spiel\n\t\t\t\t2 - Spiel laden\t\t", int(), (1, 2))
-        return auswahl
-
-    def __print_alles_fuer_spielzug(self):
-        print(f"\t\t\t\t{self.aktueller_spieler.name} du bist dran.\n")
-        print("\t\t\t\tHier hast du schon ueberall hingeschossen: ")
-        self.print_spielfeld(self.aktueller_spieler.spielfeld_gegner)
-        print("\n\t\t\t\tEigenes Spielfeld:")
-        self.print_spielfeld(self.aktueller_spieler.spielfeld)
-        print(f"\t\t\t\t{self.aktueller_spieler.name}, wo willst du hinschiessen?")
-
-    @staticmethod
-    def clear_terminal():
-        """
-        Löscht Inhalt der Shell
-        """
-        if platform.system() == "Windows":
-            os.system('cls')
-        if platform.system() == "Linux":
-            os.system('clear')
-
-    def __speicher_spielstand_daten(self) -> dict:
-        """Sammelt die benoetigten Daten der Aktuellen Spieler und gibt diese zurueck
-
-        Returns:
-            dict: fertiges dict zum speichern
-        """
-        daten: dict = {}
-
-        # Allgemeine Daten wie Name und Punkte
-        daten["master"] = {
-            "aktueller_spieler": {
-                "name": self.__aktueller_spieler.name,
-                "punkte": self.__aktueller_spieler.punkte
-            },
-            "aktueller_gegner": {
-                "name": self.__aktueller_gegner.name,
-                "punkte": self.__aktueller_gegner.punkte
-            }
-        }
-
-        # Spielfeder fuer aktueller Spieler
-        daten[self.__aktueller_spieler.name] = {
-            "spielfeld": self.__aktueller_spieler.spielfeld.spielfeld,
-            "spielfeld_gegner": self.__aktueller_spieler.spielfeld_gegner.spielfeld
-        }
-
-        # Spielfeder fuer aktueller gegner Spieler
-        daten[self.__aktueller_gegner.name] = {
-            "spielfeld": self.__aktueller_gegner.spielfeld.spielfeld,
-            "spielfeld_gegner": self.__aktueller_gegner.spielfeld_gegner.spielfeld
-        }
-
-        return daten
-
-    def __speicher_spielstand(self):
-        """Fragt den User nach einem Pfad und speichert diesen am angegeben Ort. Wenn String leer, dann aktueller Pfad
-        """
-        try:
-            pfad = user_input("Pfad zum Speichern (optional auch leer):", str)
-            daten = self.__speicher_spielstand_daten()
-            speichern(daten, pfad)
-        except IOError:
-            print("Spielstand konnte nicht gespeichert werden! Pls try again")
-            self.__speicher_spielstand()
-
-    def __lade_spielstand(self, pfad: str):
-        try:
-            daten: dict = laden(pfad)
-
-            aktueller_spieler_master = daten["master"]["aktueller_spieler"]
-            aktueller_spieler_gegner_master = daten["master"]["aktueller_gegner"]
-
-            aktueller_spieler_name = aktueller_spieler_master["name"]
-            aktueller_spieler_punkte = aktueller_spieler_master["punkte"]
-            aktueller_spieler_spielfeld = Spielfeld(spielfeld=daten[aktueller_spieler_name]["spielfeld"])
-            aktueller_spieler_spielfeld_gegner = Spielfeld(spielfeld=daten[aktueller_spieler_name]["spielfeld_gegner"])
-
-            aktueller_spieler_gegner_name = aktueller_spieler_gegner_master["name"]
-            aktueller_spieler_gegner_punkte = aktueller_spieler_gegner_master["punkte"]
-            aktueller_spieler_gegner_spielfeld = Spielfeld(spielfeld=daten[aktueller_spieler_gegner_name]["spielfeld"])
-            aktueller_spieler_gegner_spielfeld_gegner = Spielfeld(spielfeld=daten[aktueller_spieler_gegner_name]["spielfeld_gegner"])
-
-            self.__aktueller_spieler = Spieler(aktueller_spieler_name, aktueller_spieler_spielfeld,
-                                               aktueller_spieler_spielfeld_gegner, aktueller_spieler_punkte)
-            self.__aktueller_gegner = Spieler(aktueller_spieler_gegner_name, aktueller_spieler_gegner_spielfeld,
-                                              aktueller_spieler_gegner_spielfeld_gegner, aktueller_spieler_gegner_punkte)
-
-        except KeyError:
-            print("Gespeicherte Datei wurde beschaedigt, spielstand konnte nicht wiederhergestellt werden!")
-            sys.exit(1)
-        except (IOError, FileNotFoundError, TypeError):
-            print("Fehler beim Laden der Daten! Bitte neu versuchen")
-            sys.exit(1)
-
-    def __setzte_speichern_flag(self, zusandt: bool = True):
-        """Beim Beenden des aktuellen Zuges sorgt diese Flag, dass der Spielstand gespeichert wird
-
-        Args:
-            zusandt (bool, optional): Defaults to True.
-        """
-        self.__speichern_flag = zusandt
-
     def spielen(self):
         """Methode die nach dem Initalisieren aufgerufen werden kann, damit die normale Spielabfolge bis zu einem gewinner ausgeführt werden kann
         """
@@ -486,7 +492,7 @@ class Master:
             self.__setzte_speichern_flag(False)
 
         if self.__ist_spiel_vorbei:
-            self.__print_spielende(self.__aktueller_spieler)
+            self.__print_spielende(self.aktueller_spieler)
 
     def fuehre_spielzug_aus(self, koordinate: Koordinate) -> bool:
         """Spielzug (Schuss) ausfuehren.
