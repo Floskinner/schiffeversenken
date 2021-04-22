@@ -417,7 +417,7 @@ class Master:
             Status: Status des Treffers
         """
         try:
-            schuss_ergebnis: Status = spieler.wird_abgeschossen(koordinate)
+            schuss_ergebnis: Status = gegner.wird_abgeschossen(koordinate)
             if schuss_ergebnis == Status.TREFFER:
                 spieler.update_spielfeld_gegner(koordinate, Status.TREFFER)
                 gegner.update_spielfeld(koordinate, Status.TREFFER)
