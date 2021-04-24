@@ -241,9 +241,11 @@ class Master:
         Löscht Inhalt der Shell
         """
         if platform.system() == "Windows":
-            os.system('cls')
+            #os.system('cls')
+            print()
         if platform.system() == "Linux":
-            os.system('clear')
+            #os.system('clear')
+            print()
 
     @staticmethod
     def print_countdown(zeit: int = 3):
@@ -446,7 +448,12 @@ class Master:
         Returns:
             Richtung: richtung
         """
-        return Richtung(user_input("\n\t\t\t\tWaehle Richtung:\n\t\t\t\t0 - Norden\n\t\t\t\t1 - Osten\n\t\t\t\t2 - Sueden\n\t\t\t\t3 - Westen\n\t\t\t\t", int()))
+        return Richtung(user_input("\n\t\t\t\tWaehle Richtung:\n """
+                                   "\t\t\t\t0 - Norden\n"""
+                                   "\t\t\t\t1 - Osten\n"""
+                                   "\t\t\t\t2 - Sueden\n"""
+                                   "\t\t\t\t3 - Westen\n"""
+                                   "\t\t\t\t", int()))
 
     @staticmethod
     def get_user_input_name(spieler_nummer: int) -> str:
@@ -460,7 +467,8 @@ class Master:
         """
         return user_input(f"\n\t\t\t\tName von Spieler {spieler_nummer}: ", str)
 
-    def platziere_schiff(self, spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate):
+    @staticmethod
+    def platziere_schiff(spielfeld: Spielfeld, schiff: Schiff, koordinate: Koordinate):
         """Uebergebenes Schiff wird platziert
 
         Args:
