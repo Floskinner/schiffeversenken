@@ -1,15 +1,15 @@
 {
     "master": {
         "aktueller_spieler": {
-            "name": "eins",
+            "name": "Floqueboquue",
             "punkte": 0
         },
         "aktueller_gegner": {
-            "name": "zwei",
+            "name": "Floskinner",
             "punkte": 0
         }
     },
-    "eins": {
+    "Floqueboquue": {
         "spielfeld": [
             [
                 1,
@@ -255,7 +255,7 @@
             ]
         ]
     },
-    "zwei": {
+    "Floskinner": {
         "spielfeld": [
             [
                 2,

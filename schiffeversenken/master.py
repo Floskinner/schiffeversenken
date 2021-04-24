@@ -255,7 +255,7 @@ class Master:
             zeit (int, optional): Die Sekunden die, der Countdown brauchen soll. Defaults to 3.
         """
         while zeit:
-            print(f"Anzeige wird in {zeit} Sekunden geloescht.")
+            print(f"\t\t\t\tAnzeige wird in {zeit} Sekunden geloescht.")
             time.sleep(1)
             zeit -= 1
 
@@ -263,7 +263,7 @@ class Master:
     def __print_spielende(gewinner: Spieler):
         """Gibt eine Nachricht aus, die den Gewinner verkündet und das Spiel beendet
         """
-        print(f"{gewinner.name} hat gewonnen! Glueckwunsch!")
+        print(f"\t\t\t\t{gewinner.name} hat gewonnen! Glueckwunsch!")
 
     @staticmethod
     def print_menu() -> int:
@@ -493,13 +493,15 @@ class Master:
             gueltiger_schuss = self.fuehre_spielzug_aus(koordinate)
 
         self.print_countdown(5)
-        self.__toggle_spielzug()
+        
         if self.__speichern_flag:
             self.__speicher_spielstand()
             self.__setzte_speichern_flag(False)
 
         if self.__ist_spiel_vorbei:
             self.__print_spielende(self.aktueller_spieler)
+
+        self.__toggle_spielzug()
 
     def fuehre_spielzug_aus(self, koordinate: Koordinate) -> bool:
         """Spielzug (Schuss) ausfuehren.
