@@ -241,11 +241,9 @@ class Master:
         Löscht Inhalt der Shell
         """
         if platform.system() == "Windows":
-            #os.system('cls')
-            print()
+            os.system('cls')
         if platform.system() == "Linux":
-            #os.system('clear')
-            print()
+            os.system('clear')
 
     @staticmethod
     def print_countdown(zeit: int = 3):
@@ -493,7 +491,7 @@ class Master:
             gueltiger_schuss = self.fuehre_spielzug_aus(koordinate)
 
         self.print_countdown(5)
-        
+
         if self.__speichern_flag:
             self.__speicher_spielstand()
             self.__setzte_speichern_flag(False)

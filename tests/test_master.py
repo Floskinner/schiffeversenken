@@ -57,9 +57,6 @@ class Test_Master(unittest.TestCase):
         self.test_koordinate_daneben = Koordinate('E',1)
         return super().setUp()
 
-    def test_print_spielfeld_letzter_schuss(self):
-        self.master.print_spielfeld(self.befuelltes_spielfeld_letzter_schuss)
-
     def test_print_spielfeld(self):
         with patch('sys.stdout', new=StringIO()) as fake_out:
             self.master.print_spielfeld(self.spieler_1.spielfeld)
@@ -161,7 +158,7 @@ class Test_Master(unittest.TestCase):
             with patch('sys.stdout', new=StringIO()) as fake_out:
                 got_input:Richtung = self.master.get_user_input_name(1)
                 self.assertEqual(self.master.spieler_1.name, got_input)
-                self.assertEqual(fake_out.getvalue(), "\t\t\t\tName von Spieler 1: ")
+                self.assertEqual(fake_out.getvalue(), "\n\t\t\t\tName von Spieler 1: ")
 
     def test_fuehre_spielzug_aus(self):
         getroffen:bool = self.master.fuehre_spielzug_aus(self.test_koordinate_treffer)
@@ -204,8 +201,10 @@ class Test_Master(unittest.TestCase):
     def test_initialisieren(self):       
         with patch('sys.stdin', new=StringIO("tests\\test_speichern.json")):
             self.master.initialisieren(2)
-            self.assertEqual(self.master.aktueller_spieler.name, "eins")
-            self.assertEqual(self.master.aktueller_gegner.name, "zwei")
+            self.assertEqual(self.master.aktueller_spieler.name, "Floqueboquue")
+            self.assertEqual(self.master.aktueller_gegner.name, "Floskinner")
+            self.assertNotEqual(self.master.aktueller_spieler.spielfeld, None)
+            self.assertNotEqual(self.master.aktueller_gegner.spielfeld, None)
 
     def test_get_spieler_1(self):
         spieler = self.master.spieler_1

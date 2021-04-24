@@ -16,7 +16,6 @@ class Spielfeld():
         """Erstelle Spielfeld
         kwargs (dict):
             dimension (int) = 10: Veraendert die groesse vom Spielfeld
-            spielfeld list[list[int]]]: Fertiges Spielfeld zuordnen
             spielfeld list[list[Status]]: Fertiges Spielfeld zuordnen
         """
 

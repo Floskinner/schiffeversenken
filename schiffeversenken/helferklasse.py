@@ -43,13 +43,16 @@ def user_input(text: str, datentyp: Union[str, int], erlaubte_werte: Optional[Un
     return data
 
 
-def speichern(daten: dict, pfad: str = f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json"):
+def speichern(daten: dict, pfad: str):
     """Speichert die Daten entsprechend dem Pfad als json ab
 
     Args:
         daten (dict): Daten welche gespeichert werden
         pfad (str, optional): Speicherpfad. Defaults to f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json".
     """
+    if pfad.strip() == "":
+        pfad = f"{datetime.now().day}_{datetime.now().month}_{datetime.now().year}.json"
+
     with open(pfad, 'w') as outfile:
         json.dump(daten, outfile)
 

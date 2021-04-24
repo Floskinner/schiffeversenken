@@ -24,7 +24,7 @@ class Koordinate:
 
         self.__x_position = x_wert - 1
         self.__y_position = y_wert - 1
-        self.richtung = richtung
+        self.__richtung = richtung
 
     @property
     def x_position(self) -> int:
